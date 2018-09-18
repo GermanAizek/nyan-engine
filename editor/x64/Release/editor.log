@@ -1,0 +1,10 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(373,5): warning MSB8004: каталог Output заканчивается не косой чертой.  Этот экземпляр сборки добавит косую черту, поскольку она необходима для правильного определения каталога Output.
+  Moc'ing editor.h...
+  Rcc'ing editor.qrc...
+  Uic'ing editor.ui...
+  RCC: Warning: No resources in 'X:\nyanengine\editor\editor.qrc'.
+  editor.cpp
+  main.cpp
+  moc_editor.cpp
+  qrc_editor.cpp
+  editor.vcxproj -> X:\nyanengine\bin\SDK\editor.exe

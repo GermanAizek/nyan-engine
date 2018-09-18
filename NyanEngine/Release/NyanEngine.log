@@ -1,0 +1,19 @@
+﻿  Allocator.cpp
+  Companion.cpp
+  Console.cpp
+  Dialog.cpp
+  Engine.cpp
+  EngineFunctions.cpp
+  EngineFunctions_Lua.cpp
+  ErrorLogger.cpp
+EngineFunctions_Lua.cpp(12): warning C4018: <: несоответствие типов со знаком и без знака
+  Parser.cpp
+  Render.cpp
+  Scene.cpp
+  Script.cpp
+Script.cpp(25): warning C4244: return: преобразование "lua_Integer" в "int", возможна потеря данных
+Script.cpp(112): warning C4244: return: преобразование "lua_Integer" в "int", возможна потеря данных
+  ScriptRender.cpp
+  SoundManager.cpp
+  ThreadManager.cpp
+sfml-graphics-s.lib(RenderStates.cpp.obj) : fatal error LNK1112: тип компьютера модуля "x64" противоречит типу целевого компьютера "x86"

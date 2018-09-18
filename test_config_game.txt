@@ -1,0 +1,56 @@
+namewindow = 123
+countscenes = 2
+[scene1]
+countframes = 5
+background = "Textures/back1.jpg"
+frames_dialogs = {
+-
+"Nekochan" "Hello World!"
+"Nekochan" "It's example create on Nyan Engine!"
+"You" "Where I am?"
+"Nekochan" "Welcome to 2D world! Nyah!"
+-
+}
+frames_sounds = {
+-
+"Sounds/hello.ogg"
+-
+-
+-
+-
+}
+frames_animations = {
+-
+-
+-
+-
+-
+-
+}
+frames_events = {
+-
+-
+-
+-
+-
+-
+}
+[scene2]
+countframes = 2
+background = "Textures/back2.jpg"
+frames_dialogs = {
+-
+-
+}
+frames_sounds = {
+-
+-
+}
+frames_animations = {
+-
+-
+}
+frames_events = {
+-
+-
+}

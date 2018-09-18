@@ -1,0 +1,8 @@
+bin/
+ipch/
+.vs/
+*.pdb
+*.tlog
+*.log
+*.lastbuildstate
+NyanEngine/x64/
