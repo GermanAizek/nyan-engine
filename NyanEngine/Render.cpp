@@ -17,9 +17,10 @@ extern SceneSettings scene_token;
 void drawer(sf::RenderWindow &window) {
 	window.clear();
 
-	for (auto &p : vectorSprites) {
-		//std::cout << "Pull element " << &p << "...\n";
-		window.draw(p);
+	for (auto &s : mapSpriteTexture) {
+		s.first.setTexture(s.second);
+
+		window.draw(s.first);
 	}
 
 	window.display();
@@ -32,7 +33,7 @@ size_t renderDeviceSFML() {
 		return ERROR_FILE;
 	}
 	*/
-	sf::RenderWindow window(sf::VideoMode(settings_token.w,settings_token.h), game_token.namewindow, sf::Style::Titlebar | sf::Style::Close);
+	sf::RenderWindow window(sf::VideoMode(settings_token.w, settings_token.h), game_token.namewindow, sf::Style::Fullscreen);//sf::Style::Titlebar | sf::Style::Close);
 	sf::RenderWindow* ptrw = &window;
     window.setVerticalSyncEnabled(settings_token.vsync);
 	window.setFramerateLimit(settings_token.frameratemax);
@@ -44,41 +45,42 @@ size_t renderDeviceSFML() {
 	*/
 
 	/* Test render */
-	sf::Texture texture;
-	if (!texture.loadFromFile("content/textures/1.gif")) {
-		if (!texture.loadFromFile("content/textures/null.jpg"))
-		return ERROR_LOAD;
-	}
+	//sf::Texture texture;
+	//if (!texture.loadFromFile("content/textures/1.gif")) {
+	//	if (!texture.loadFromFile("content/textures/null.jpg"))
+	//	return ERROR_LOAD;
+	//}
 	
-	sf::Sprite sprite(texture);
-	sprite.setScale(sf::Vector2f(1.3f, 1.5f));
-	texture.setSmooth(true); //antialiasing
-	addAllocator(sprite);
+	//sf::Sprite sprite(texture);
+	//sprite.setScale(sf::Vector2f(1.3f, 1.5f));
+	//texture.setSmooth(true); //antialiasing
+	//addAllocator(sprite);
 
-	sf::Font font;
-	if (!font.loadFromFile("content/fonts/arial.ttf"))
-		return ERROR_LOAD;
+	//sf::Font font;
+	//if (!font.loadFromFile("content/fonts/arial.ttf"))
+	//	return ERROR_LOAD;
 
-	sf::Text text(L"Привет, давай понякаемся!", font, 50);
+	//sf::Text text(L"Привет, давай понякаемся!", font, 50);
 	//text.setString(L"Привет, давай понякаемся!");
-	text.setPosition(250, 700);
-	text.setFillColor(sf::Color::Cyan);
+	//text.setPosition(250, 700);
+	//text.setFillColor(sf::Color::Cyan);
 	//addAllocator(text);
 
 	// Load a music to play
-	sf::Music music;
-	if (!music.openFromFile("content/sounds/musics/opening.ogg"))
-		return ERROR_LOAD;
+	//sf::Music music;
+	//if (!music.openFromFile("content/sounds/musics/opening.ogg"))
+	//	return ERROR_LOAD;
 	// Play the music
-	music.play();
+	//music.play();
 	
 	
 
 	//Script render
 	script.Create();
-	script.RegisterConstant<lua_CFunction>(CreatePerson, "CreatePerson");
 	script.RegisterConstant<lua_CFunction>(Write, "Write");
-	script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
+	script.RegisterConstant<lua_CFunction>(CreatePerson, "CreatePerson");
+	script.RegisterConstant<lua_CFunction>(SetBackground, "SetBackground");
+	//script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
 	script.RegisterConstant<lua_CFunction>(SetColorSpace, "SetColorSpace");
 	script.DoFile("render.lua");
 	script.Close();

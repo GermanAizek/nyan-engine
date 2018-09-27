@@ -25,7 +25,7 @@ int Script::DoFile(char* ScriptFileName) {
 	auto ret = luaL_dofile(lua_state, ScriptFileName);
 
 	if (ret != 0) {
-		std::cout << "Hint Machine 0x%x\n" << ret << "\n";
+		std::cout << "Hint Machine 0x%x " << ret << "\n";
 		std::cout << "Error: " << lua_tostring(lua_state, -1) << "\n";
 	}
 

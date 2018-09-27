@@ -9,4 +9,5 @@ extern Script script;
 int Write(lua_State*);
 int CreateBox(lua_State*);
 int CreatePerson(lua_State*);
+int SetBackground(lua_State*);
 int SetColorSpace(lua_State*);

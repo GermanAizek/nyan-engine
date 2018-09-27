@@ -13,11 +13,17 @@ size_t initAllocator() {
 
 }
 
-size_t addAllocator(sf::Sprite &sprite) {
+size_t addAllocator(sf::Sprite &sprite, sf::Texture &texture) {
 
-	vectorSprites.push_back(sprite);
+	mapSpriteTexture.push_back(std::pair<sf::Sprite, sf::Texture>(sprite, texture));
 
-	std::cout << "Vector size:" << vectorSprites.size() << "\n";
+	//vectorSprites.push_back(sprite);
+
+	//std::cout << "Vector size:" << vectorSprites.size() << "\n";
+
+	//vectorTextures.push_back(texture);
+
+	//std::cout << "Vector size:" << vectorTextures.size() << "\n";
 	
 	return 0;
 }

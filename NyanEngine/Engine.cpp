@@ -216,7 +216,7 @@ int main(size_t argc, char* argv[]){
 
 	}
 
-	initThreadManager();
+	//initThreadManager();
 
 	if(!Core::benchmode) initEngine();
 	else {
