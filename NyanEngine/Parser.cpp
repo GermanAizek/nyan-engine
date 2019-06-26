@@ -28,9 +28,6 @@ json j2 = {
 //ofstream out("pretty.json", ios_base::binary);
 //out << std::setw(4) << j2 << std::endl;
 
-
-
-
 extern Settings settings_token;
 extern GameSettings game_token;
 extern SceneSettings scene_token;

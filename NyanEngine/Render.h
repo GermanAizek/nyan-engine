@@ -7,17 +7,11 @@
 #define ERROR_TEXTURE "content/textures/null.jpg"
 
 size_t renderDeviceSFML();
-size_t renderDeviceVulkan();
-size_t renderDeviceFalcor();
 void renderScene();
 void loadSetTextureSprite(sf::Sprite sprite, std::string texture);
 
-enum ID_Render { // Нумерация ошибок в рендере
+enum IDRender
+{
 	ERROR_FILE,
 	ERROR_LOAD
 };
-
-// Vulkan API class application
-
-
-//

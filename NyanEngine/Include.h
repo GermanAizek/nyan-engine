@@ -25,5 +25,3 @@ extern "C"{
 //#include <Python.h>
 //#pragma comment (lib, "python38.lib")
 //
-
-//#include <glut.h> 

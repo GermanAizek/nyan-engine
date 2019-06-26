@@ -2,4 +2,4 @@
 
 #include "Include.h"
 
-void addLogFile(std::string error);// const char* error
+void addLogFile(std::string error);

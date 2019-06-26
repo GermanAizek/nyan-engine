@@ -13,7 +13,8 @@ extern "C" {
 #ifndef _SCRIPT_H_
 #define _SCRIPT_H_
 
-class Script {
+class Script
+{
 	lua_State *lua_state;
 
 public:

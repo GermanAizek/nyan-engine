@@ -4,7 +4,8 @@
 
 #define u_int unsigned int
 
-typedef struct Settings {
+typedef struct Settings
+{
 	std::string renderer = "sfml";
 	u_int w = 1366;
 	u_int h = 768;
@@ -12,21 +13,22 @@ typedef struct Settings {
 	bool vsync = false;
 	bool windowed = true;
 	bool devconfig = false;
-}Settings; // TODO: Проверка файлов как отдельный поток
+} Settings;
 
-typedef struct GameSettings {
+typedef struct GameSettings
+{
 	std::string namewindow = "Nyan engine";
 	size_t countscenes = 0;
-	//vector<>
-}GameSettings;
+} GameSettings;
 
 #include "RenderVulkan.h"
 
-typedef struct SceneSettings {
+typedef struct SceneSettings
+{
 	std::string namescene = "Test";
 	size_t count_obj;
 	glm::vec3 coordinatesObj[1000];
-}SceneSettings;
+} SceneSettings;
 
 bool parseSettings();
 bool parseGame();

@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-void Script::Create() {
+void Script::Create()
+{
 	lua_state = luaL_newstate();
 
 	static const luaL_Reg lualibs[] = {
@@ -11,20 +12,24 @@ void Script::Create() {
 		{ NULL, NULL }
 	};
 
-	for (const luaL_Reg *lib = lualibs; lib->func != NULL; lib++) {
+	for (const luaL_Reg *lib = lualibs; lib->func != NULL; lib++)
+	{
 		luaL_requiref(lua_state, lib->name, lib->func, 1);
 		lua_settop(lua_state, 0);
 	}
 }
 
-void Script::Close() {
+void Script::Close()
+{
 	lua_close(lua_state);
 }
 
-int Script::DoFile(char* ScriptFileName) {
+int Script::DoFile(char* ScriptFileName)
+{
 	auto ret = luaL_dofile(lua_state, ScriptFileName);
 
-	if (ret != 0) {
+	if (ret != 0)
+	{
 		std::cout << "Hint Machine 0x%x " << ret << "\n";
 		std::cout << "Error: " << lua_tostring(lua_state, -1) << "\n";
 	}
@@ -33,43 +38,50 @@ int Script::DoFile(char* ScriptFileName) {
 }
 
 template<>
-void Script::RegisterConstant<int>(int value, char* constantname) {
+void Script::RegisterConstant<int>(int value, char* constantname)
+{
 	lua_pushinteger(lua_state, value);
 	lua_setglobal(lua_state, constantname);
 }
 
 template<>
-void Script::RegisterConstant<double>(double value, char* constantname) {
+void Script::RegisterConstant<double>(double value, char* constantname)
+{
 	lua_pushnumber(lua_state, value);
 	lua_setglobal(lua_state, constantname);
 }
 
 template<>
-void Script::RegisterConstant<char*>(char* value, char* constantname) {
+void Script::RegisterConstant<char*>(char* value, char* constantname)
+{
 	lua_pushstring(lua_state, value);
 	lua_setglobal(lua_state, constantname);
 }
 
 template<>
-void Script::RegisterConstant<bool>(bool value, char* constantname) {
+void Script::RegisterConstant<bool>(bool value, char* constantname)
+{
 	lua_pushboolean(lua_state, value);
 	lua_setglobal(lua_state, constantname);
 }
 
 template<>
-void Script::RegisterConstant<lua_CFunction>(int(*value)(lua_State*), char* constantname) {
+void Script::RegisterConstant<lua_CFunction>(int(*value)(lua_State*), char* constantname)
+{
 	lua_pushcfunction(lua_state, value);
 	lua_setglobal(lua_state, constantname);
 }
 
 
-void Script::Array() {
+void Script::Array()
+{
 	lua_createtable(lua_state, 2, 0);
 }
 
 
 template<>
-void Script::RegisterConstantArray<int>(int value, int index) {
+void Script::RegisterConstantArray<int>(int value, int index)
+{
 	lua_pushnumber(lua_state, index);
 	lua_pushinteger(lua_state, value);
 	lua_settable(lua_state, -3);
@@ -100,57 +112,68 @@ void Script::RegisterConstantArray<bool>(bool value, int index)
 }
 
 template<>
-void Script::RegisterConstantArray<lua_CFunction>(lua_CFunction value, int index) {
+void Script::RegisterConstantArray<lua_CFunction>(lua_CFunction value, int index)
+{
 	lua_pushnumber(lua_state, index);
 	lua_pushcfunction(lua_state, value);
 	lua_settable(lua_state, -3);
 }
 
-void Script::RegisterArray(char* arrayname) {
+void Script::RegisterArray(char* arrayname)
+{
 	lua_setglobal(lua_state, arrayname);
 }
 
-int Script::GetArgumentCount() {
+int Script::GetArgumentCount()
+{
 	return lua_gettop(lua_state);
 }
 
 template<>
-int Script::GetArgument<int>(int index) {
+int Script::GetArgument<int>(int index)
+{
 	return lua_tointeger(lua_state, index);
 }
 
 template<>
-double Script::GetArgument<double>(int index) {
+double Script::GetArgument<double>(int index)
+{
 	return lua_tonumber(lua_state, index);
 }
 
 template<>
-char* Script::GetArgument<char*>(int index) {
+char* Script::GetArgument<char*>(int index)
+{
 	return (char*)lua_tostring(lua_state, index);
 }
 
 template<>
-bool Script::GetArgument<bool>(int index) {
+bool Script::GetArgument<bool>(int index)
+{
 	return lua_toboolean(lua_state, index);
 }
 
 
 template<>
-void Script::Return<int>(int value) {
+void Script::Return<int>(int value)
+{
 	lua_pushinteger(lua_state, value);
 }
 
 template<>
-void Script::Return<double>(double value) {
+void Script::Return<double>(double value)
+{
 	lua_pushnumber(lua_state, value);
 }
 
 template<>
-void Script::Return<char*>(char* value) {
+void Script::Return<char*>(char* value)
+{
 	lua_pushstring(lua_state, value);
 }
 
 template<>
-void Script::Return<bool>(bool value) {
+void Script::Return<bool>(bool value)
+{
 	lua_pushboolean(lua_state, value);
 }

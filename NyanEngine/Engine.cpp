@@ -13,7 +13,8 @@ Settings settings_token;
 GameSettings game_token;
 SceneSettings scene_token;
 
-size_t initEngine(){
+int initEngine()
+{
 	addLogFile("Initializing engine...");
 	//addThread(&parseGame);
 	// TODO: Посмотреть аниме
@@ -34,7 +35,8 @@ size_t initEngine(){
 		//thread.launch();
 		//thread1.launch();
 
-	if (dir && parseSettings() && InitScene()) {
+	if (dir && parseSettings() && InitScene())
+	{
 		addLogFile("Engine is initialized!");
 		addLogFile("Parsing file scene!");
 
@@ -44,7 +46,8 @@ size_t initEngine(){
 		
 		cout << "TEST SETTINGS:" << settings_token.renderer << endl;
 
-		if (settings_token.renderer != "vulkan") {
+		if (settings_token.renderer != "vulkan")
+		{
 			addLogFile("[ERROR] Render type is not selected!");
 			addLogFile("[ERROR] The default is: SFML");
 
@@ -54,8 +57,10 @@ size_t initEngine(){
 				settings_token.renderer = "sfml";
 		}
 
-		if (settings_token.renderer == "sfml" || settings_token.renderer == "SFML") { // Renderer SFML
-			switch (renderDeviceSFML()) {
+		if (settings_token.renderer == "sfml" || settings_token.renderer == "SFML") // Renderer SFML
+		{
+			switch (renderDeviceSFML())
+			{
 			case ERROR_FILE:
 				addLogFile("[ERROR] No configuration values found. Check the .cfg files!");
 				Core::criticalError = true;
@@ -64,9 +69,12 @@ size_t initEngine(){
 				addLogFile("[ERROR] Error loading file for rendering!");
 				//Core::criticalError = true;
 				break;
-			default: addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
+			default:
+				addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
 			}
-		} else if (settings_token.renderer == "vulkan" || settings_token.renderer == "VULKAN") { // Renderer Vulkan API
+		}
+		else if (settings_token.renderer == "vulkan" || settings_token.renderer == "VULKAN") // Renderer Vulkan API
+		{
 			renderDeviceVulkan();
 			system("pause");
 			//switch (renderDeviceVulkan()) {
@@ -81,22 +89,25 @@ size_t initEngine(){
 			//default: addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
 			//}
 		}
-		else if (settings_token.renderer == "falcor" || settings_token.renderer == "FALCOR") { // Renderer Falcor Framework
+		else if (settings_token.renderer == "falcor" || settings_token.renderer == "FALCOR") // Renderer Falcor Framework
+		{
 			renderDeviceFalcor();
 			system("pause");
 		}
-
 	}
-	else if (false == dir) {
+	else if (false == dir)
+	{
 		addLogFile("[ERROR] Check content path!");
 		Core::criticalError = true;
 	}
-	else {
+	else
+	{
 		addLogFile("[ERROR] Check configuration files for errors!");
 		Core::criticalError = true;
 	}
 
-	if (Core::criticalError) {
+	if (Core::criticalError)
+	{
 		addLogFile("[CRITICAL_ERROR] Engine noticed critical errors, check the log!");
 		system("pause");
 	}
@@ -104,24 +115,30 @@ size_t initEngine(){
 	return EXIT_SUCCESS;
 }
 
-int main(size_t argc, char* argv[]){
+int main(size_t argc, char* argv[])
+{
 	ios_base::sync_with_stdio(0);
 	system("title Engine log");
 
 	#pragma omp for
-	for (int i = 1; i < argc; ++i){
+	for (int i = 1; i < argc; ++i)
+	{
 		cout << "Start parameter used: " << argv[i] << "\n";
-		if (!strcmp(argv[i], "/bench")){
+
+		if (!strcmp(argv[i], "/bench"))
+		{
 			addLogFile("Benchmark mode on!");
 			Core::benchmode = true;
 		}
 
-		if (!strcmp(argv[i], "/debug")){
+		if (!strcmp(argv[i], "/debug"))
+		{
 			addLogFile("Debug mode on!");
 			Core::debugmode = true;
 		}
 
-		if (!strcmp(argv[i], "/vulkan")) {
+		if (!strcmp(argv[i], "/vulkan"))
+		{
 			addLogFile("Vulkan API enable!");
 			settings_token.renderer = "vulkan";
 			Core::vulkanmode = true;
@@ -130,8 +147,8 @@ int main(size_t argc, char* argv[]){
 
 	cout << "Hello friend! Welcome to Nyan Engine by GermanAizek\n";
 
-	if (Core::debugmode) {
-
+	if (Core::debugmode)
+	{
 		/*
 		// Test LUA script
 		const char* name = "test.lua";
@@ -213,16 +230,19 @@ int main(size_t argc, char* argv[]){
 		}
 		*/
 		//
-
 	}
 
 	//initThreadManager();
 
-	if(!Core::benchmode) initEngine();
-	else {
+	if (!Core::benchmode)
+		initEngine();
+	else
+	{
 		cout << "Start benchmark!\n";
+
 		#pragma omp for
-		for (int i = 0; i < 10; ++i) { //Для получения среднего времени
+		for (int i = 0; i < 10; ++i) // Take avg time
+		{
 
 			auto begin = std::chrono::high_resolution_clock::now();
 			initEngine();
@@ -235,24 +255,29 @@ int main(size_t argc, char* argv[]){
 	return EXIT_SUCCESS;
 }
 
-bool checkDir(const char* path) { // HACK: Проверяет только файлы в каталогах, но не каталоги
+bool checkDir(const char* path) // TODO: Проверяет только файлы в каталогах, но не каталоги
+{
 	ifstream file;
 	file.open(path);
 	file.close();
 
-	// HACK: Восстановление каталогов
+	// TODO: Восстановление каталогов
 	//const wchar_t lpath = path;
 	//LPCTSTR s = L"char";
 	//if (CreateDirectory(path, NULL)) {
 	//	cout << "[AUTOFIX] Recovering directory ..." << path << "\n";
 	//}
 
-	if (file) {
-		if (Core::debugmode) cout << "File verified: '" << path << "'\n";
+	if (file)
+	{
+		if (Core::debugmode)
+			cout << "File verified: '" << path << "'\n";
+
 		return true;
 	}
 
-	if (Core::debugmode) cout << "File not found: '" << path << "'\n";
+	if (Core::debugmode)
+		cout << "File not found: '" << path << "'\n";
 
 	return false;
 }

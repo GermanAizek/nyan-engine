@@ -14,10 +14,12 @@ extern Settings settings_token;
 extern GameSettings game_token;
 extern SceneSettings scene_token;
 
-void drawer(sf::RenderWindow &window) {
+void drawer(sf::RenderWindow& window)
+{
 	window.clear();
 
-	for (auto &s : mapSpriteTexture) {
+	for (auto &s : mapSpriteTexture)
+	{
 		s.first.setTexture(s.second);
 
 		window.draw(s.first);
@@ -26,7 +28,8 @@ void drawer(sf::RenderWindow &window) {
 	window.display();
 }
 
-size_t renderDeviceSFML() {
+size_t renderDeviceSFML()
+{
 	/*
 	if (NULL == settings_token.w || NULL == settings_token.h || NULL == settings_token.vsync || NULL == settings_token.frameratemax) {
 		addLogFile("[ERROR] No configuration values found. Check the .cfg files!");
@@ -111,9 +114,11 @@ size_t renderDeviceSFML() {
 	//sf::Sprite sprite(pullerAllocator());
 	
 
-	while (window.isOpen()) {
+	while (window.isOpen())
+	{
 		sf::Event event;
-		while (window.pollEvent(event)) {
+		while (window.pollEvent(event))
+		{
 			if (event.type == sf::Event::Closed) {
 				window.close();
 				return 1;
@@ -140,7 +145,8 @@ size_t renderDeviceSFML() {
 	return true;
 }
 
-void renderScene() {
+void renderScene()
+{
 	//sf::CircleShape shape(100.f);
 	//shape.setFillColor(sf::Color::Green);
 
@@ -148,47 +154,21 @@ void renderScene() {
 	sf::Texture texture;
 	if (!texture.loadFromFile("content/textures/1.jpg"))
 		return;
+
 	sf::Sprite sprite(texture);
 	// Create a graphical text to display
 	//sf::Font font;
 	//if (!font.loadFromFile("arial.ttf"))
 	//	return;
 	//sf::Text text("Nyan", font, 50);
-
 }
 
-size_t renderDeviceVulkan() {
-
-	createApp(1366, 768, "vuklan");
-	
-	//Application::setParamWindow(1024, 768, "vuklan");
-
-	return EXIT_SUCCESS;
-}
-
-//#include "FeatureDemo.h"
-
-size_t renderDeviceFalcor() {
-
-	/*FeatureDemo sample;
-	SampleConfig config;
-	config.windowDesc.title = "Nyan engine";
-	config.freezeTimeOnStartup = true;
-#ifdef _WIN32
-	sample.run(config);
-#else
-	sample.run(config, (uint32_t)argc, argv);
-#endif
-	return 0;*/
-
-	return EXIT_SUCCESS;
-}
-
-void loadSetTextureSprite(sf::Sprite sprite,string texture) {
+void loadSetTextureSprite(sf::Sprite sprite, std::string texture)
+{
 	
 	sf::Texture obj_texture;
-	
-	if(!obj_texture.loadFromFile(texture)){
+	if(!obj_texture.loadFromFile(texture))
+	{
 		//cout << "[ERROR} Cannot load texture! " << texture << "\n";
 		addLogFile("[ERROR} Cannot load texture! " + texture);
 		return;
