@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Include.h"
-
 namespace Core { // ¬ пространстве имен об€зательно статические переменные
 	extern bool criticalError = false;
 	extern bool benchmode = false;
@@ -9,5 +7,5 @@ namespace Core { // ¬ пространстве имен об€зательно статические переменные
 	extern bool vulkanmode = false;
 } // TODO:  ос€к на кос€ке, но нельз€ провер€ть режимы €дра движка в других файлах
 
-size_t initEngine();
+int initEngine();
 bool checkDir(const char* path);

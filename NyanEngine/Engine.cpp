@@ -4,7 +4,6 @@
 #include "Render.h"
 #include "Parser.h"
 #include "ErrorLogger.h"
-#include "ThreadManager.h"
 //#include "Script.h"
 #include "EngineFunctions_Lua.h"
 

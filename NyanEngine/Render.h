@@ -1,9 +1,6 @@
 #pragma once
 
 #include "stdafx.h"
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include "Include.h"
 
 #define ERROR_TEXTURE "content/textures/null.jpg"
 

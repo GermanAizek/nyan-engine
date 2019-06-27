@@ -1,8 +1,14 @@
 #include "stdafx.h"
 #include "Console.h"
 
-// TODO: Консоль забыл сделать
+void initConsole(sf::RenderWindow window)
+{
+	ImGui::SFML::Init(window);
+}
 
-//void showConsole() {
-//	if (glfwGetKey(, GLFW_KEY_A));
-//}
+void createConsole(const char* name)
+{
+	ImGui::Begin(name);
+	ImGui::InputText("Window title", "1", 255);
+	ImGui::End();
+}

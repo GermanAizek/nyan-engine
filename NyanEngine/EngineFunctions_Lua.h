@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Include.h"
 #include "Script.h"
 
 extern Script script;

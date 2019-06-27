@@ -1,3 +1,6 @@
 #pragma once
 
-#include "Include.h"
+#include "Render.h"
+
+void initConsole(sf::RenderWindow window);
+void createConsole(const char* name);

@@ -16,6 +16,12 @@
 #include <algorithm>
 //#include <io.h>
 
+// sfml render
+#include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
+#include "imgui.h"
+#include "imgui-sfml.h"
+
 // Lua 5.3
 #pragma comment(lib, "lua53.lib")
 

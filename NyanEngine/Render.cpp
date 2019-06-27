@@ -5,9 +5,8 @@
 //#include "Script.h"
 #include "EngineFunctions_Lua.h"
 #include "ScriptRender.h"
-#include "Allocator.h"
 #include "Engine.h"
-
+#include "Console.h"
 
 extern Settings settings_token;
 extern GameSettings game_token;
@@ -17,12 +16,12 @@ void drawer(sf::RenderWindow& window)
 {
 	window.clear();
 
-	for (auto &s : mapSpriteTexture)
+	/*for (auto &s : mapSpriteTexture)
 	{
 		s.first.setTexture(s.second);
 
 		window.draw(s.first);
-	}
+	}*/
 
 	window.display();
 }
@@ -56,7 +55,6 @@ size_t renderDeviceSFML()
 	//sf::Sprite sprite(texture);
 	//sprite.setScale(sf::Vector2f(1.3f, 1.5f));
 	//texture.setSmooth(true); //antialiasing
-	//addAllocator(sprite);
 
 	//sf::Font font;
 	//if (!font.loadFromFile("content/fonts/arial.ttf"))
@@ -66,7 +64,6 @@ size_t renderDeviceSFML()
 	//text.setString(L"Привет, давай понякаемся!");
 	//text.setPosition(250, 700);
 	//text.setFillColor(sf::Color::Cyan);
-	//addAllocator(text);
 
 	// Load a music to play
 	//sf::Music music;
@@ -83,7 +80,6 @@ size_t renderDeviceSFML()
 	script.RegisterConstant<lua_CFunction>(CreatePerson, "CreatePerson");
 	script.RegisterConstant<lua_CFunction>(SetBackground, "SetBackground");
 	//script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
-	script.RegisterConstant<lua_CFunction>(SetColorSpace, "SetColorSpace");
 	script.DoFile("render.lua");
 	script.Close();
 	/*
@@ -112,18 +108,21 @@ size_t renderDeviceSFML()
 	
 	//sf::Sprite sprite(pullerAllocator());
 	
-
+	sf::Clock deltaClock;
 	while (window.isOpen())
 	{
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
+			ImGui::SFML::ProcessEvent(event);
+
 			if (event.type == sf::Event::Closed) {
 				window.close();
 				return 1;
 			}
-				
 		}
+
+		ImGui::SFML::Update(window, deltaClock.restart());
 
 		drawer(window);
 

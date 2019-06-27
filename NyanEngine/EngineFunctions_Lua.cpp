@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EngineFunctions_Lua.h"
 //#include "EngineFunctions.h"
+#include "Render.h"
 #include "Script.h"
-#include "Allocator.h"
 //#include "ScriptRender.h"
 // TODO: Добавить больше методов функций для работы с движком
 
@@ -30,7 +30,6 @@ int CreateBox(lua_State*)
 	}
 
 	sf::Sprite sprite(tex);
-	addAllocator(sprite, tex);
 
 	return 0;
 }
@@ -52,8 +51,6 @@ int CreatePerson(lua_State*)
 	//sprite.setScale(scale);
 	texture.setSmooth(true); //antialiasing
 
-	addAllocator(sprite, texture);
-
 	return 0;
 }
 
@@ -74,8 +71,6 @@ int SetBackground(lua_State*)
 	//sprite.setPosition(pos);
 	//sprite.setRotation(angle);
 	//sprite.setScale(scale);
-
-	addAllocator(sprite, texture);
 
 	return 0;
 }

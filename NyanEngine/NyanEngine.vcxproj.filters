@@ -25,12 +25,6 @@
     <Filter Include="Engine\Render\2D">
       <UniqueIdentifier>{a5eb99c1-fe12-4c41-b689-4fc742a2e71d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Game API\Visual novel">
-      <UniqueIdentifier>{4787349e-41a6-4c81-b507-5f33b3a55bb0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Allocator">
-      <UniqueIdentifier>{d0e7ed40-4af3-4c53-abe9-e84bfb4d767a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -51,20 +45,8 @@
     <ClInclude Include="Render.h">
       <Filter>Engine\Render\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Companion.h">
-      <Filter>Engine\Game API\Visual novel</Filter>
-    </ClInclude>
-    <ClInclude Include="Dialog.h">
-      <Filter>Engine\Game API\Visual novel</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene.h">
-      <Filter>Engine\Game API\Visual novel</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptRender.h">
       <Filter>Engine\Script</Filter>
-    </ClInclude>
-    <ClInclude Include="Allocator.h">
-      <Filter>Engine\Allocator</Filter>
     </ClInclude>
     <ClInclude Include="EngineFunctions_Lua.h">
       <Filter>Engine\Script</Filter>
@@ -97,26 +79,11 @@
     <ClCompile Include="Render.cpp">
       <Filter>Engine\Render\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Companion.cpp">
-      <Filter>Engine\Game API\Visual novel</Filter>
-    </ClCompile>
-    <ClCompile Include="Dialog.cpp">
-      <Filter>Engine\Game API\Visual novel</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene.cpp">
-      <Filter>Engine\Game API\Visual novel</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptRender.cpp">
       <Filter>Engine\Script</Filter>
     </ClCompile>
-    <ClCompile Include="Allocator.cpp">
-      <Filter>Engine\Allocator</Filter>
-    </ClCompile>
     <ClCompile Include="EngineFunctions_Lua.cpp">
       <Filter>Engine\Script</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Engine\Game API</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
