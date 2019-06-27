@@ -1,15 +1,15 @@
+#include "stdafx.h"
 #include "EngineFunctions_Lua.h"
 //#include "EngineFunctions.h"
 #include "Script.h"
 #include "Allocator.h"
 //#include "ScriptRender.h"
-#include "RenderVulkan.h"
 // TODO: Добавить больше методов функций для работы с движком
 
 Script script;
 
-unsigned int WIDTH = sf::VideoMode::getDesktopMode().width;
-unsigned int HEIGHT = sf::VideoMode::getDesktopMode().height;
+size_t WIDTH = sf::VideoMode::getDesktopMode().width;
+size_t HEIGHT = sf::VideoMode::getDesktopMode().height;
 
 int Write(lua_State*)
 {

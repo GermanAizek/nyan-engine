@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ScriptRender.h"
 
 int drawerScript(sf::RenderWindow* ptrw) {

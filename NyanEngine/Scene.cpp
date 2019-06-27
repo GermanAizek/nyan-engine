@@ -1,5 +1,5 @@
-#include "Scene.h"
 #include "stdafx.h"
+#include "Scene.h"
 
 bool InitScene(){
 	Scene scene;

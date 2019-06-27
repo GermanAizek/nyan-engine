@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Render.h"
 #include "Parser.h"
 #include "ErrorLogger.h"
@@ -6,8 +7,6 @@
 #include "ScriptRender.h"
 #include "Allocator.h"
 #include "Engine.h"
-
-#include "RenderVulkan.h"
 
 
 extern Settings settings_token;

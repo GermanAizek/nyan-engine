@@ -1,15 +1,14 @@
 #pragma once
 
+#include "stdafx.h"
 #include "Include.h"
-
-#define u_int unsigned int
 
 typedef struct Settings
 {
 	std::string renderer = "sfml";
-	u_int w = 1366;
-	u_int h = 768;
-	u_int frameratemax = 60;
+	size_t w = 1366;
+	size_t h = 768;
+	size_t frameratemax = 60;
 	bool vsync = false;
 	bool windowed = true;
 	bool devconfig = false;
@@ -20,8 +19,6 @@ typedef struct GameSettings
 	std::string namewindow = "Nyan engine";
 	size_t countscenes = 0;
 } GameSettings;
-
-#include "RenderVulkan.h"
 
 typedef struct SceneSettings
 {

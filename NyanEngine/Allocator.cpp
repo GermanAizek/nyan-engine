@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Allocator.h"
 #include "Engine.h"
 //#include "Render.h"

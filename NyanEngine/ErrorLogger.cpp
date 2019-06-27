@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ErrorLogger.h"
 
 // TODO: Добавить время когда произошла ошибка

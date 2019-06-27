@@ -1,5 +1,5 @@
+#include "stdafx.h"
 #include "Console.h"
-#include "RenderVulkan.h"
 
 // TODO: Консоль забыл сделать
 

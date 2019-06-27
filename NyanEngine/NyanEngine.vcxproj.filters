@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Include">
-      <UniqueIdentifier>{cd5b5ef1-4a82-4174-a205-e5ff09888cbc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine">
       <UniqueIdentifier>{73172740-1eca-4068-bfc6-2bc86ce71eee}</UniqueIdentifier>
     </Filter>
@@ -15,9 +12,6 @@
     </Filter>
     <Filter Include="Engine\Game API">
       <UniqueIdentifier>{de4b6598-bd2f-4a04-8ca8-9070d9ded419}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Thread Manager">
-      <UniqueIdentifier>{3a7e31c7-a108-4520-a534-5f4ca9ce2a4e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Sound Manager">
       <UniqueIdentifier>{19deb21c-71ab-499c-91c3-241240de6d4c}</UniqueIdentifier>
@@ -37,28 +31,13 @@
     <Filter Include="Engine\Allocator">
       <UniqueIdentifier>{d0e7ed40-4af3-4c53-abe9-e84bfb4d767a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Game API\3D">
-      <UniqueIdentifier>{8d656237-fc34-4f08-8a1f-776791df2acc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Render\3D_Vulkan">
-      <UniqueIdentifier>{79b5dd18-b4f2-412e-9768-b48e9a1c8dd5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Render\3D">
-      <UniqueIdentifier>{b9f88660-00d7-4510-b552-08cd4c7df87a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include.h">
-      <Filter>Include</Filter>
-    </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Parser.h">
       <Filter>Engine\Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadManager.h">
-      <Filter>Engine\Thread Manager</Filter>
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>Engine\Sound Manager</Filter>
@@ -95,12 +74,6 @@
     </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="3DCamera.h">
-      <Filter>Engine\Game API\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderVulkan.h">
-      <Filter>Engine\Render\3D_Vulkan</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -108,9 +81,6 @@
     </ClCompile>
     <ClCompile Include="Parser.cpp">
       <Filter>Engine\Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadManager.cpp">
-      <Filter>Engine\Thread Manager</Filter>
     </ClCompile>
     <ClCompile Include="SoundManager.cpp">
       <Filter>Engine\Sound Manager</Filter>
@@ -147,12 +117,6 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Engine\Game API</Filter>
-    </ClCompile>
-    <ClCompile Include="3DCamera.cpp">
-      <Filter>Engine\Game API\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderVulkan.cpp">
-      <Filter>Engine\Render\3D_Vulkan</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

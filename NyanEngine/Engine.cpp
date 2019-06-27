@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Engine.h"
 #include "Scene.h"
 #include "Render.h"
@@ -16,7 +17,6 @@ SceneSettings scene_token;
 int initEngine()
 {
 	addLogFile("Initializing engine...");
-	//addThread(&parseGame);
 	// TODO: Посмотреть аниме
 
 	// HACK: Должен проверять наличие всех файлов
@@ -73,29 +73,8 @@ int initEngine()
 				addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
 			}
 		}
-		else if (settings_token.renderer == "vulkan" || settings_token.renderer == "VULKAN") // Renderer Vulkan API
-		{
-			renderDeviceVulkan();
-			system("pause");
-			//switch (renderDeviceVulkan()) {
-			////case ERROR_FILE:
-			////	addLogFile("[ERROR] No configuration values found. Check the .cfg files!");
-			////	Core::criticalError = true;
-			////	break;
-			//case ERROR_LOAD:
-			//	addLogFile("[ERROR] Error loading file for rendering!");
-			//	//Core::criticalError = true;
-			//	break;
-			//default: addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
-			//}
-		}
-		else if (settings_token.renderer == "falcor" || settings_token.renderer == "FALCOR") // Renderer Falcor Framework
-		{
-			renderDeviceFalcor();
-			system("pause");
-		}
 	}
-	else if (false == dir)
+	else if (!dir)
 	{
 		addLogFile("[ERROR] Check content path!");
 		Core::criticalError = true;
