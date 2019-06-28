@@ -42,35 +42,19 @@ int initEngine()
 		//parseScene(); раскомментить обязательно
 
 		addLogFile("Start rendering!");
-		
-		std::cout << "TEST SETTINGS:" << settings_token.renderer << '\n';
 
-		if (settings_token.renderer != "vulkan")
+		switch (renderDeviceSFML())
 		{
-			addLogFile("[ERROR] Render type is not selected!");
-			addLogFile("[ERROR] The default is: SFML");
-
-			if (Core::vulkanmode)
-				settings_token.renderer = "vulkan";
-			else
-				settings_token.renderer = "sfml";
-		}
-
-		if (settings_token.renderer == "sfml" || settings_token.renderer == "SFML") // Renderer SFML
-		{
-			switch (renderDeviceSFML())
-			{
-			case ERROR_FILE:
-				addLogFile("[ERROR] No configuration values found. Check the .cfg files!");
-				Core::criticalError = true;
-				break;
-			case ERROR_LOAD:
-				addLogFile("[ERROR] Error loading file for rendering!");
-				//Core::criticalError = true;
-				break;
-			default:
-				addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
-			}
+		case ERROR_FILE:
+			addLogFile("[ERROR] No configuration values found. Check the .cfg files!");
+			Core::criticalError = true;
+			break;
+		case ERROR_LOAD:
+			addLogFile("[ERROR] Error loading file for rendering!");
+			//Core::criticalError = true;
+			break;
+		default:
+			addLogFile("[GERMAN] I fucking, but you do not have mistakes!");
 		}
 	}
 	else if (!dir)
@@ -113,13 +97,6 @@ int main(size_t argc, char* argv[])
 		{
 			addLogFile("Debug mode on!");
 			Core::debugmode = true;
-		}
-
-		if (!strcmp(argv[i], "/vulkan"))
-		{
-			addLogFile("Vulkan API enable!");
-			settings_token.renderer = "vulkan";
-			Core::vulkanmode = true;
 		}
 	}
 

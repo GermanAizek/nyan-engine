@@ -8,9 +8,6 @@
 
 Script script;
 
-size_t WIDTH = sf::VideoMode::getDesktopMode().width;
-size_t HEIGHT = sf::VideoMode::getDesktopMode().height;
-
 int Write(lua_State*)
 {
 	for (size_t i = 1; i < script.GetArgumentCount() + 1; ++i)
@@ -22,6 +19,7 @@ int Write(lua_State*)
 int CreateBox(lua_State*)
 {
 	sf::Texture tex;
+	tex.setSmooth(true); //antialiasing
 	if (!tex.loadFromFile(script.GetArgument<char*>(1), sf::IntRect(script.GetArgument<int>(2), script.GetArgument<int>(3),
 		script.GetArgument<int>(4), script.GetArgument<int>(5))))
 	{
@@ -30,6 +28,7 @@ int CreateBox(lua_State*)
 	}
 
 	sf::Sprite sprite(tex);
+	addAllocator(sprite, tex);
 
 	return 0;
 }
@@ -37,6 +36,7 @@ int CreateBox(lua_State*)
 int CreatePerson(lua_State*)
 {
 	sf::Texture texture;
+	texture.setSmooth(true); //antialiasing
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
 	{
 		if (!texture.loadFromFile(ERROR_TEXTURE))
@@ -49,7 +49,7 @@ int CreatePerson(lua_State*)
 	//sprite.setPosition(pos);
 	//sprite.setRotation(angle);
 	//sprite.setScale(scale);
-	texture.setSmooth(true); //antialiasing
+	addAllocator(sprite, texture);
 
 	return 0;
 }
@@ -71,6 +71,7 @@ int SetBackground(lua_State*)
 	//sprite.setPosition(pos);
 	//sprite.setRotation(angle);
 	//sprite.setScale(scale);
+	addAllocator(sprite, texture);
 
 	return 0;
 }

@@ -1,14 +1,20 @@
 #include "stdafx.h"
 #include "Console.h"
 
-void initConsole(sf::RenderWindow window)
-{
-	ImGui::SFML::Init(window);
-}
-
-void createConsole(const char* name)
+void consoleCreate(const char* name)
 {
 	ImGui::Begin(name);
-	ImGui::InputText("Window title", "1", 255);
+	ImGui::InputTextMultiline("", "test console", HEIGHT >> 2);
+	ImGui::InputText("", "", 255);
+
+	if (ImGui::Button("Run")) {
+		//window.setTitle(windowTitle);
+	}
+
 	ImGui::End();
+}
+
+size_t consoleHandler()
+{
+	
 }

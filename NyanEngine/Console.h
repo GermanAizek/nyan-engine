@@ -2,5 +2,5 @@
 
 #include "Render.h"
 
-void initConsole(sf::RenderWindow window);
-void createConsole(const char* name);
+void consoleCreate(const char* name);
+size_t consoleHandler();

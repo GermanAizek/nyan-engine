@@ -4,7 +4,6 @@
 
 typedef struct Settings
 {
-	std::string renderer = "sfml";
 	size_t w = 1366;
 	size_t h = 768;
 	size_t frameratemax = 60;

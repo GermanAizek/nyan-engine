@@ -40,7 +40,6 @@ bool parseSettings() {
 
 	if (settings.is_open()){
 		addLogFile("[Engine] Parsing settings.cfg...");
-		for (size_t i = 0; i<2; ++i) settings >> tmp; settings >> settings_token.renderer;// render
 		for (size_t i = 0; i<2; ++i) settings >> tmp; settings >> settings_token.w;// width
 		for (size_t i = 0; i<2; ++i) settings >> tmp; settings >> settings_token.h;// height
 		for (size_t i = 0; i<2; ++i) settings >> tmp; settings >> settings_token.vsync;// vsync
@@ -53,7 +52,6 @@ bool parseSettings() {
 		std::cout << "[AUTOFIX] Recovering a file settings.cfg ...\n";
 
 		std::ofstream settings("settings.cfg", std::ios_base::app | std::ios_base::binary);
-		settings << "renderer = " << settings_token.renderer << "\n";// width
 		settings << "width = " << settings_token.w << "\n";// width
 		settings << "height = " << settings_token.h << "\n";// height
 		settings << "vsync = " << settings_token.vsync << "\n";// vsync
@@ -73,7 +71,6 @@ bool parseSettings() {
 		parseGame();
 	}
 
-	std::cout << "TEST SETTINGS:" << settings_token.renderer << '\n';
 	// Recovering
 	//if (NULL == settings_token.w) settings_token.w = 1024;
 	//if (NULL == settings_token.h) settings_token.w = 768;

@@ -12,38 +12,34 @@ extern Settings settings_token;
 extern GameSettings game_token;
 extern SceneSettings scene_token;
 
-void drawer(sf::RenderWindow& window)
+void addAllocator(sf::Sprite& sprite, sf::Texture& texture) {
+	mapSpriteTexture.push_back(std::pair<sf::Sprite, sf::Texture>(sprite, texture));
+}
+
+void drawer(sf::RenderWindow& window, sf::Clock dt)
 {
 	window.clear();
 
-	/*for (auto &s : mapSpriteTexture)
+	for (auto &s : mapSpriteTexture)
 	{
 		s.first.setTexture(s.second);
 
 		window.draw(s.first);
-	}*/
+	}
+
+	ImGui::SFML::Update(window, dt.restart());
+	createConsole("Console");
+	ImGui::SFML::Render(window);
 
 	window.display();
 }
 
 size_t renderDeviceSFML()
 {
-	/*
-	if (NULL == settings_token.w || NULL == settings_token.h || NULL == settings_token.vsync || NULL == settings_token.frameratemax) {
-		addLogFile("[ERROR] No configuration values found. Check the .cfg files!");
-		return ERROR_FILE;
-	}
-	*/
-	sf::RenderWindow window(sf::VideoMode(settings_token.w, settings_token.h), game_token.namewindow, sf::Style::Fullscreen);//sf::Style::Titlebar | sf::Style::Close);
-	sf::RenderWindow* ptrw = &window;
-    window.setVerticalSyncEnabled(settings_token.vsync);
-	window.setFramerateLimit(settings_token.frameratemax);
-
-	/*
-	cout << settings_token.w;
-	cout << settings_token.h;
-	cout << game_token.namewindow;
-	*/
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "build", sf::Style::Fullscreen);
+	ImGui::SFML::Init(window);
+    window.setVerticalSyncEnabled(true);
+	window.setFramerateLimit(120);
 
 	/* Test render */
 	//sf::Texture texture;
@@ -79,7 +75,7 @@ size_t renderDeviceSFML()
 	script.RegisterConstant<lua_CFunction>(Write, "Write");
 	script.RegisterConstant<lua_CFunction>(CreatePerson, "CreatePerson");
 	script.RegisterConstant<lua_CFunction>(SetBackground, "SetBackground");
-	//script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
+	script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
 	script.DoFile("render.lua");
 	script.Close();
 	/*
@@ -108,7 +104,7 @@ size_t renderDeviceSFML()
 	
 	//sf::Sprite sprite(pullerAllocator());
 	
-	sf::Clock deltaClock;
+	sf::Clock dt;
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -122,23 +118,10 @@ size_t renderDeviceSFML()
 			}
 		}
 
-		ImGui::SFML::Update(window, deltaClock.restart());
-
-		drawer(window);
-
-		//window.clear();
-		// TODO: Возрат указателя на объект из renderScene для отрисовки в renderDeviceSFML или создать отдельную функцию для отрисовки
-		//window.draw(sprite);
-		//drawerScript(ptrw);
-		//cout << pullerAllocator() << endl;
-		//window.draw(sprite);
-		//window.draw(spaceFunction(sprite));
-		//window.draw(sprite);
-		//window.draw(text);
-		//window.draw(spr);
-
-		//window.display();
+		drawer(window, dt);
 	}
+
+	ImGui::SFML::Shutdown();
 	
 	return true;
 }
