@@ -1,1 +1,0 @@
-nyanengine.exe /vulkan /debug
