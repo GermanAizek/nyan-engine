@@ -22,7 +22,7 @@
     <Filter Include="Engine\Error Logger">
       <UniqueIdentifier>{909917f0-ab07-43ea-8125-fdf28a80eca9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Render\2D">
+    <Filter Include="Engine\Render\imgui">
       <UniqueIdentifier>{a5eb99c1-fe12-4c41-b689-4fc742a2e71d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -42,9 +42,6 @@
     <ClInclude Include="ErrorLogger.h">
       <Filter>Engine\Error Logger</Filter>
     </ClInclude>
-    <ClInclude Include="Render.h">
-      <Filter>Engine\Render\2D</Filter>
-    </ClInclude>
     <ClInclude Include="ScriptRender.h">
       <Filter>Engine\Script</Filter>
     </ClInclude>
@@ -56,6 +53,9 @@
     </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Render.h">
+      <Filter>Engine\Render</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -76,14 +76,29 @@
     <ClCompile Include="ErrorLogger.cpp">
       <Filter>Engine\Error Logger</Filter>
     </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>Engine\Render\2D</Filter>
-    </ClCompile>
     <ClCompile Include="ScriptRender.cpp">
       <Filter>Engine\Script</Filter>
     </ClCompile>
     <ClCompile Include="EngineFunctions_Lua.cpp">
       <Filter>Engine\Script</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>Engine\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SDK\imgui\imgui.cpp">
+      <Filter>Engine\Render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SDK\imgui\imgui-SFML.cpp">
+      <Filter>Engine\Render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SDK\imgui\imgui_demo.cpp">
+      <Filter>Engine\Render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SDK\imgui\imgui_draw.cpp">
+      <Filter>Engine\Render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\SDK\imgui\imgui_widgets.cpp">
+      <Filter>Engine\Render\imgui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

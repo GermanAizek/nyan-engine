@@ -34,7 +34,7 @@ int initEngine()
 		//thread.launch();
 		//thread1.launch();
 
-	if (dir && parseSettings() && InitScene())
+	if (dir && parseSettings())
 	{
 		addLogFile("Engine is initialized!");
 		addLogFile("Parsing file scene!");
@@ -43,7 +43,7 @@ int initEngine()
 
 		addLogFile("Start rendering!");
 		
-		cout << "TEST SETTINGS:" << settings_token.renderer << endl;
+		std::cout << "TEST SETTINGS:" << settings_token.renderer << '\n';
 
 		if (settings_token.renderer != "vulkan")
 		{
@@ -95,13 +95,13 @@ int initEngine()
 
 int main(size_t argc, char* argv[])
 {
-	ios_base::sync_with_stdio(0);
+	std::ios_base::sync_with_stdio(0);
 	system("title Engine log");
 
 	#pragma omp for
 	for (int i = 1; i < argc; ++i)
 	{
-		cout << "Start parameter used: " << argv[i] << "\n";
+		std::cout << "Start parameter used: " << argv[i] << '\n';
 
 		if (!strcmp(argv[i], "/bench"))
 		{
@@ -123,7 +123,7 @@ int main(size_t argc, char* argv[])
 		}
 	}
 
-	cout << "Hello friend! Welcome to Nyan Engine by GermanAizek\n";
+	std::cout << "Hello friend! Welcome to Nyan Engine by GermanAizek\n";
 
 	if (Core::debugmode)
 	{
@@ -216,7 +216,7 @@ int main(size_t argc, char* argv[])
 		initEngine();
 	else
 	{
-		cout << "Start benchmark!\n";
+		std::cout << "Start benchmark!\n";
 
 		#pragma omp for
 		for (int i = 0; i < 10; ++i) // Take avg time
@@ -226,7 +226,7 @@ int main(size_t argc, char* argv[])
 			initEngine();
 			auto end = std::chrono::high_resolution_clock::now();
 
-			cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() << "ns\n";
+			std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() << "ns\n";
 		}
 	}
 
@@ -235,7 +235,7 @@ int main(size_t argc, char* argv[])
 
 bool checkDir(const char* path) // TODO: Проверяет только файлы в каталогах, но не каталоги
 {
-	ifstream file;
+	std::ifstream file;
 	file.open(path);
 	file.close();
 
@@ -249,13 +249,13 @@ bool checkDir(const char* path) // TODO: Проверяет только файлы в каталогах, но 
 	if (file)
 	{
 		if (Core::debugmode)
-			cout << "File verified: '" << path << "'\n";
+			std::cout << "File verified: '" << path << "'\n";
 
 		return true;
 	}
 
 	if (Core::debugmode)
-		cout << "File not found: '" << path << "'\n";
+		std::cout << "File not found: '" << path << "'\n";
 
 	return false;
 }

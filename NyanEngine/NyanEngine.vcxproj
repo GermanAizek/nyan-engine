@@ -212,9 +212,9 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)SDK\json-develop\single_include\nlohmann;$(SolutionDir)SDK\boost_1_66_0;$(SolutionDir)SDK\SFML\x64\include;$(SolutionDir)SDK\imgui;$(SolutionDir)SDK\lua53\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\GIT\nyanengine\NyanEngine;$(SolutionDir)SDK\json-develop\single_include\nlohmann;$(SolutionDir)SDK\boost_1_66_0;$(SolutionDir)SDK\SFML\x64\include;$(SolutionDir)SDK\imgui;$(SolutionDir)SDK\lua53\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PreprocessToFile>true</PreprocessToFile>
+      <PreprocessToFile>false</PreprocessToFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -225,6 +225,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OpenMPSupport>true</OpenMPSupport>
       <AdditionalOptions>-DJSON_MultipleHeaders=ON %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(TargetName).pch</PrecompiledHeaderOutputFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -283,6 +284,11 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\SDK\imgui\imgui-SFML.cpp" />
+    <ClCompile Include="..\SDK\imgui\imgui.cpp" />
+    <ClCompile Include="..\SDK\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\SDK\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\SDK\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="EngineFunctions_Lua.cpp" />

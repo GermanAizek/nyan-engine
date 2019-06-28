@@ -1,11 +1,14 @@
-﻿  Console.cpp
-  Engine.cpp
-  EngineFunctions_Lua.cpp
-  ErrorLogger.cpp
-  Parser.cpp
-  Render.cpp
-  Script.cpp
-  ScriptRender.cpp
-  SoundManager.cpp
-LINK : fatal error LNK1181: не удается открыть входной файл "x64\Release\Console.obj"
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppCommon.targets(725,5): error MSB6006: "link.exe" завершилась с кодом 1181.
+﻿  Engine.cpp
+Parser.obj : warning LNK4006: "bool Core::criticalError" (?criticalError@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Parser.obj : warning LNK4006: "bool Core::benchmode" (?benchmode@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Parser.obj : warning LNK4006: "bool Core::debugmode" (?debugmode@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Parser.obj : warning LNK4006: "bool Core::vulkanmode" (?vulkanmode@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Render.obj : warning LNK4006: "bool Core::criticalError" (?criticalError@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Render.obj : warning LNK4006: "bool Core::benchmode" (?benchmode@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Render.obj : warning LNK4006: "bool Core::debugmode" (?debugmode@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+Render.obj : warning LNK4006: "bool Core::vulkanmode" (?vulkanmode@Core@@3_NA) уже определен в Engine.obj; второе определение пропущено
+C:\GIT\nyanengine\bin\nyanengine.exe : warning LNK4088: образ создается из-за параметра /FORCE; образ нельзя запустить
+  Создание кода
+  Not all modules are compiled with -Gy (function comdat), build without incremental LTCG.
+  Создание кода завершено
+  NyanEngine.vcxproj -> C:\GIT\nyanengine\bin\nyanengine.exe

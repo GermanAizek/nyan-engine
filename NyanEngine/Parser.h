@@ -23,7 +23,6 @@ typedef struct SceneSettings
 {
 	std::string namescene = "Test";
 	size_t count_obj;
-	glm::vec3 coordinatesObj[1000];
 } SceneSettings;
 
 bool parseSettings();
