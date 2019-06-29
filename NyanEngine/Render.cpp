@@ -12,23 +12,34 @@ extern Settings settings_token;
 extern GameSettings game_token;
 extern SceneSettings scene_token;
 
-void addAllocator(sf::Sprite& sprite, sf::Texture& texture) {
-	mapSpriteTexture.push_back(std::pair<sf::Sprite, sf::Texture>(sprite, texture));
+void addAllocator(sf::Sprite& sprite, sf::Texture& texture)
+{
+	mapAllocator.push_back(std::pair<sf::Sprite, sf::Texture>(sprite, texture));
+}
+
+void addAllocatorText(sf::Text& text, sf::Font& font)
+{
+	mapAllocatorText.push_back(std::pair<sf::Text, sf::Font>(text, font));
 }
 
 void drawer(sf::RenderWindow& window, sf::Clock dt)
 {
 	window.clear();
 
-	for (auto &s : mapSpriteTexture)
+	for (auto& sprite : mapAllocator)
 	{
-		s.first.setTexture(s.second);
+		sprite.first.setTexture(sprite.second);
+		window.draw(sprite.first);
+	}
 
-		window.draw(s.first);
+	for (auto& text : mapAllocatorText)
+	{
+		text.first.setFont(text.second);
+		window.draw(text.first);
 	}
 
 	ImGui::SFML::Update(window, dt.restart());
-	createConsole("Console");
+	consoleCreate("Console");
 	ImGui::SFML::Render(window);
 
 	window.display();
@@ -39,22 +50,7 @@ size_t renderDeviceSFML()
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "build", sf::Style::Fullscreen);
 	ImGui::SFML::Init(window);
     window.setVerticalSyncEnabled(true);
-	window.setFramerateLimit(120);
-
-	/* Test render */
-	//sf::Texture texture;
-	//if (!texture.loadFromFile("content/textures/1.gif")) {
-	//	if (!texture.loadFromFile("content/textures/null.jpg"))
-	//	return ERROR_LOAD;
-	//}
-	
-	//sf::Sprite sprite(texture);
-	//sprite.setScale(sf::Vector2f(1.3f, 1.5f));
-	//texture.setSmooth(true); //antialiasing
-
-	//sf::Font font;
-	//if (!font.loadFromFile("content/fonts/arial.ttf"))
-	//	return ERROR_LOAD;
+	window.setFramerateLimit(60);
 
 	//sf::Text text(L"Привет, давай понякаемся!", font, 50);
 	//text.setString(L"Привет, давай понякаемся!");
@@ -70,14 +66,25 @@ size_t renderDeviceSFML()
 	
 	
 
-	//Script render
-	script.Create();
-	script.RegisterConstant<lua_CFunction>(Write, "Write");
-	script.RegisterConstant<lua_CFunction>(CreatePerson, "CreatePerson");
-	script.RegisterConstant<lua_CFunction>(SetBackground, "SetBackground");
-	script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
-	script.DoFile("render.lua");
-	script.Close();
+	// create thread main drawer
+	std::thread threadDraw([]() {
+		script.Create();
+		// constants
+		script.RegisterConstant<lua_CFunction>(getScreenWidth, "ScrW");
+		script.RegisterConstant<lua_CFunction>(getScreenHeight, "ScrH");
+		// console
+		script.RegisterConstant<lua_CFunction>(PrintConsole, "Msg");
+		// graphics
+		script.RegisterConstant<lua_CFunction>(CreateSprite, "AddSprite");
+		//script.RegisterConstant<lua_CFunction>(setupFont, "SetFont");
+		script.RegisterConstant<lua_CFunction>(CreateText, "AddText");
+		script.RegisterConstant<lua_CFunction>(SetBackground, "SetBackground");
+		script.DoFile("content//scripts//render.lua");
+		script.Close();
+	});
+
+	threadDraw.join();
+
 	/*
 	sf::Texture texture2;
 	if (!texture2.loadFromFile("content/textures/null.jpg", sf::IntRect(100, 100, 500, 500)))
@@ -107,12 +114,13 @@ size_t renderDeviceSFML()
 	sf::Clock dt;
 	while (window.isOpen())
 	{
-		sf::Event event;
-		while (window.pollEvent(event))
+		sf::Event GameEvent;
+		while (window.pollEvent(GameEvent))
 		{
-			ImGui::SFML::ProcessEvent(event);
+			ImGui::SFML::ProcessEvent(GameEvent);
 
-			if (event.type == sf::Event::Closed) {
+			if (GameEvent.type == sf::Event::Closed) {
+				// shutdown render window
 				window.close();
 				return 1;
 			}

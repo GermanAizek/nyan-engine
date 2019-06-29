@@ -3,16 +3,19 @@
 #include "stdafx.h"
 
 #define ERROR_TEXTURE "content/textures/null.jpg"
+#define ERROR_FONT "content/fonts/arial.ttf"
 
-size_t WIDTH = sf::VideoMode::getDesktopMode().width;
-size_t HEIGHT = sf::VideoMode::getDesktopMode().height;
+int WIDTH = sf::VideoMode::getDesktopMode().width;
+int HEIGHT = sf::VideoMode::getDesktopMode().height;
 
 size_t renderDeviceSFML();
 void renderScene();
 void loadSetTextureSprite(sf::Sprite sprite, std::string texture);
 void addAllocator(sf::Sprite& sprite, sf::Texture& texture);
+void addAllocatorText(sf::Text& text, sf::Font& font);
 
-std::vector<std::pair<sf::Sprite, sf::Texture>> mapSpriteTexture;
+std::vector<std::pair<sf::Sprite, sf::Texture>> mapAllocator;
+std::vector<std::pair<sf::Text, sf::Font>> mapAllocatorText;
 
 enum IDRender
 {
