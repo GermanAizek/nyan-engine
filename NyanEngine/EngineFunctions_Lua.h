@@ -4,7 +4,9 @@
 
 extern Script script;
 
-int Write(lua_State*);
-int CreateBox(lua_State*);
-int CreatePerson(lua_State*);
-int SetBackground(lua_State*);
+int getScreenWidth(lua_State* luaState);
+int getScreenHeight(lua_State* luaState);
+int PrintConsole(lua_State* luaState);
+int CreateSprite(lua_State* luaState);
+int CreateText(lua_State* luaState);
+int SetBackground(lua_State* luaState);

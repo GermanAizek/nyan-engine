@@ -8,7 +8,23 @@
 
 Script script;
 
-int Write(lua_State*)
+// constants
+int getScreenWidth(lua_State* luaState)
+{
+	lua_pushinteger(luaState, WIDTH);
+
+	return 1;
+}
+
+int getScreenHeight(lua_State* luaState)
+{
+	lua_pushinteger(luaState, HEIGHT);
+
+	return 1;
+}
+
+// console
+int PrintConsole(lua_State* luaState)
 {
 	for (size_t i = 1; i < script.GetArgumentCount() + 1; ++i)
 		std::cout << script.GetArgument<char*>(i);
@@ -16,27 +32,12 @@ int Write(lua_State*)
 	return 0;
 }
 
-int CreateBox(lua_State*)
-{
-	sf::Texture tex;
-	tex.setSmooth(true); //antialiasing
-	if (!tex.loadFromFile(script.GetArgument<char*>(1), sf::IntRect(script.GetArgument<int>(2), script.GetArgument<int>(3),
-		script.GetArgument<int>(4), script.GetArgument<int>(5))))
-	{
-		std::cout << "NOT Creating Box!\n";
-		return 1;
-	}
-
-	sf::Sprite sprite(tex);
-	addAllocator(sprite, tex);
-
-	return 0;
-}
-
-int CreatePerson(lua_State*)
+// graphics
+int CreateSprite(lua_State* luaState)
 {
 	sf::Texture texture;
 	texture.setSmooth(true); //antialiasing
+
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
 	{
 		if (!texture.loadFromFile(ERROR_TEXTURE))
@@ -45,16 +46,51 @@ int CreatePerson(lua_State*)
 
 	sf::Sprite sprite(texture);
 	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
-	sprite.setScale(sf::Vector2f(1.0f, 1.0f));
-	//sprite.setPosition(pos);
-	//sprite.setRotation(angle);
-	//sprite.setScale(scale);
+	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
 	addAllocator(sprite, texture);
 
 	return 0;
 }
 
-int SetBackground(lua_State*)
+/*
+int setupFont(lua_State* luaState)
+{
+	sf::Font font;
+	if (!font.loadFromFile(script.GetArgument<char*>(1)))
+	{
+		if (!font.loadFromFile(ERROR_FONT))
+			return ERROR_LOAD;
+	}
+
+	int b = lua_tointeger(luaState, &font);
+	lua_pop(luaState, 1);
+	return b;
+}
+*/
+
+int CreateText(lua_State* luaState)
+{
+	sf::Font font;
+	if (!font.loadFromFile(script.GetArgument<char*>(2)))
+	{
+		if (!font.loadFromFile(ERROR_FONT))
+			return ERROR_LOAD;
+	}
+
+	sf::Text text;
+	text.setString(script.GetArgument<char*>(1));
+	text.setCharacterSize(script.GetArgument<int>(3));
+	text.setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
+	text.setFillColor(sf::Color::White);
+	text.setOutlineColor(sf::Color::Black);
+	text.setOutlineThickness(2.0f);
+	text.setLineSpacing(1.1f);
+	addAllocatorText(text, font);
+
+	return 0;
+}
+
+int SetBackground(lua_State* luaState)
 {
 	sf::Texture texture;
 	texture.setSmooth(true); //antialiasing
@@ -65,12 +101,8 @@ int SetBackground(lua_State*)
 	}
 
 	sf::Sprite sprite;
-	//sprite.setPosition(sf::Vector2f(200, 100));
 	sf::Vector2u vec = texture.getSize();
 	sprite.setScale((double)WIDTH / (double)vec.x, (double)HEIGHT / (double)vec.y);
-	//sprite.setPosition(pos);
-	//sprite.setRotation(angle);
-	//sprite.setScale(scale);
 	addAllocator(sprite, texture);
 
 	return 0;
