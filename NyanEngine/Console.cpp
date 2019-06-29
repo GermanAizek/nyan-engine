@@ -4,7 +4,9 @@
 void consoleCreate(const char* name)
 {
 	ImGui::Begin(name);
-	ImGui::InputTextMultiline("", "test console", HEIGHT >> 2);
+	ImGui::SetWindowPos(name, ImVec2(0, 0));
+	ImGui::SetWindowSize(name, ImVec2(WIDTH, HEIGHT * 0.18));
+	ImGui::InputTextMultiline("", "test console", 255);
 	ImGui::InputText("", "", 255);
 
 	if (ImGui::Button("Run")) {
