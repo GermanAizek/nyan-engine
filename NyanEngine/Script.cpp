@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-void Script::Create()
+lua_State* Script::Create()
 {
 	lua_state = luaL_newstate();
 
@@ -18,6 +18,8 @@ void Script::Create()
 		luaL_requiref(lua_state, lib->name, lib->func, 1);
 		lua_settop(lua_state, 0);
 	}
+
+	return lua_state;
 }
 
 void Script::Close()
@@ -25,9 +27,9 @@ void Script::Close()
 	lua_close(lua_state);
 }
 
-int Script::DoFile(char* ScriptFileName)
+int Script::DoFile(const char* fileName)
 {
-	auto ret = luaL_dofile(lua_state, ScriptFileName);
+	auto ret = luaL_dofile(lua_state, fileName);
 
 	if (ret != 0)
 	{
@@ -123,6 +125,41 @@ void Script::RegisterConstantArray<lua_CFunction>(lua_CFunction value, int index
 void Script::RegisterArray(char* arrayname)
 {
 	lua_setglobal(lua_state, arrayname);
+}
+
+template<>
+void Script::RegisterFieldGlobal<int>(int value, const char* text)
+{
+	lua_pushinteger(lua_state, value);
+	lua_setfield(lua_state, -2, text);
+}
+
+template<>
+void Script::RegisterFieldGlobal<double>(double value, const char* text)
+{
+	lua_pushnumber(lua_state, value);
+	lua_setfield(lua_state, -2, text);
+}
+
+template<>
+void Script::RegisterFieldGlobal<char*>(char* value, const char* text)
+{
+	lua_pushstring(lua_state, value);
+	lua_setfield(lua_state, -2, text);
+}
+
+template<>
+void Script::RegisterFieldGlobal<bool>(bool value, const char* text)
+{
+	lua_pushboolean(lua_state, value);
+	lua_setfield(lua_state, -2, text);
+}
+
+template<>
+void Script::RegisterFieldGlobal<lua_CFunction>(lua_CFunction value, const char* text)
+{
+	lua_pushcfunction(lua_state, value);
+	lua_setfield(lua_state, -2, text);
 }
 
 int Script::GetArgumentCount()
