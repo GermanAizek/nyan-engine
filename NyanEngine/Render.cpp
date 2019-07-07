@@ -8,9 +8,68 @@
 #include "Engine.h"
 #include "Console.h"
 
+#include <mutex>
+#include <sstream>
+
 extern Settings settings_token;
 extern GameSettings game_token;
 extern SceneSettings scene_token;
+
+std::mutex threadMutex;
+std::vector<std::exception_ptr> exceptions;
+
+void startScript(std::string nameFile)
+{
+	std::stringstream currentPath;
+	currentPath << "content//scripts//" << nameFile << ".lua";
+
+	try
+	{
+		lua_State* luaState = script.Create();
+
+		/* create the proxy metatable */
+		//luaL_newmetatable(luaState, "proxy");
+		//lua_pushcfunction(luaState, proxy);
+		//lua_setfield(luaState, -2, "__call");
+
+		/* set the global function that returns the proxy */
+		//lua_pushcfunction(luaState, getproxy);
+		//lua_setglobal(luaState, "getproxy");
+
+		// constants
+		script.RegisterConstant<lua_CFunction>(getScreenWidth, "ScrW");
+		script.RegisterConstant<lua_CFunction>(getScreenHeight, "ScrH");
+		// console
+		script.RegisterConstant<lua_CFunction>(printConsole, "Msg");
+		// graphics
+		script.Array();
+		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");
+		script.RegisterArray("render");
+
+		script.Array();
+		script.RegisterFieldGlobal<lua_CFunction>(createText, "DrawText");
+		script.RegisterFieldGlobal<lua_CFunction>(setBackground, "DrawBackground");
+		script.RegisterArray("draw");
+
+		script.Array();
+		script.RegisterFieldGlobal<lua_CFunction>(isMouseButtonPressed, "IsMouseDown");
+		script.RegisterFieldGlobal<lua_CFunction>(isKeyboardButtonPressed, "IsKeyDown");
+		script.RegisterArray("input");
+
+		//if (lua_pcall(luaState, 0, 0, 0))
+		//{
+		//	std::cout << lua_tostring(luaState, -1) << "\n"; // returns "attempt to call a nil value"
+		//	lua_pop(luaState, 1);
+		//}
+
+		script.DoFile(currentPath.str().c_str());
+	}
+	catch (...)
+	{
+		std::lock_guard<std::mutex> lock(threadMutex);
+		exceptions.push_back(std::current_exception());
+	}
+}
 
 void addAllocator(sf::Sprite& sprite, sf::Texture& texture)
 {
@@ -66,24 +125,26 @@ size_t renderDeviceSFML()
 	
 	
 
-	// create thread main drawer
-	std::thread threadDraw([]() {
-		script.Create();
-		// constants
-		script.RegisterConstant<lua_CFunction>(getScreenWidth, "ScrW");
-		script.RegisterConstant<lua_CFunction>(getScreenHeight, "ScrH");
-		// console
-		script.RegisterConstant<lua_CFunction>(PrintConsole, "Msg");
-		// graphics
-		script.RegisterConstant<lua_CFunction>(CreateSprite, "AddSprite");
-		//script.RegisterConstant<lua_CFunction>(setupFont, "SetFont");
-		script.RegisterConstant<lua_CFunction>(CreateText, "AddText");
-		script.RegisterConstant<lua_CFunction>(SetBackground, "SetBackground");
-		script.DoFile("content//scripts//render.lua");
-		script.Close();
-	});
+	// create thread init drawer
+	/*
+	exceptions.clear();
 
-	threadDraw.join();
+	std::thread threadDraw(startScript, "init");
+	threadDraw.detach();
+
+	for (auto& error : exceptions)
+	{
+		try
+		{
+			if (error != nullptr)
+				std::rethrow_exception(error);
+		}
+		catch (const std::exception& error)
+		{
+			std::cout << error.what() << std::endl;
+		}
+	}
+	*/
 
 	/*
 	sf::Texture texture2;
@@ -115,13 +176,36 @@ size_t renderDeviceSFML()
 	while (window.isOpen())
 	{
 		sf::Event GameEvent;
-		while (window.pollEvent(GameEvent))
+		if (window.pollEvent(GameEvent))
 		{
+			// create thread think drawer
+			exceptions.clear();
+
+			std::thread threadDraw(startScript, "think");
+			threadDraw.join();
+
+			for (auto& error : exceptions)
+			{
+				try
+				{
+					if (error != nullptr)
+						std::rethrow_exception(error);
+				}
+				catch (const std::exception& error)
+				{
+					std::cout << error.what() << std::endl;
+				}
+			}
+			//
+
 			ImGui::SFML::ProcessEvent(GameEvent);
 
 			if (GameEvent.type == sf::Event::Closed) {
 				// shutdown render window
 				window.close();
+				// shutdown script exec
+				script.Close();
+
 				return 1;
 			}
 		}

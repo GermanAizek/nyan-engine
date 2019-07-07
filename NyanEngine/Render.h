@@ -8,6 +8,8 @@
 int WIDTH = sf::VideoMode::getDesktopMode().width;
 int HEIGHT = sf::VideoMode::getDesktopMode().height;
 
+void startScript(std::string nameFile);
+
 size_t renderDeviceSFML();
 void renderScene();
 void loadSetTextureSprite(sf::Sprite sprite, std::string texture);
