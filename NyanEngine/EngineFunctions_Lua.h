@@ -6,7 +6,10 @@ extern Script script;
 
 int getScreenWidth(lua_State* luaState);
 int getScreenHeight(lua_State* luaState);
-int PrintConsole(lua_State* luaState);
-int CreateSprite(lua_State* luaState);
-int CreateText(lua_State* luaState);
-int SetBackground(lua_State* luaState);
+int printConsole(lua_State* luaState);
+int createSprite(lua_State* luaState);
+int createSound(lua_State* luaState);
+int createText(lua_State* luaState);
+int setBackground(lua_State* luaState);
+int isMouseButtonPressed(lua_State* luaState);
+int isKeyboardButtonPressed(lua_State* luaState);

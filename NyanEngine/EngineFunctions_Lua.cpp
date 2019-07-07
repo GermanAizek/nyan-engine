@@ -23,8 +23,15 @@ int getScreenHeight(lua_State* luaState)
 	return 1;
 }
 
+// window
+//int getScreenHeight(lua_State* luaState, void** p)
+//{
+
+//	return 1;
+//}
+
 // console
-int PrintConsole(lua_State* luaState)
+int printConsole(lua_State* luaState)
 {
 	for (size_t i = 1; i < script.GetArgumentCount() + 1; ++i)
 		std::cout << script.GetArgument<char*>(i);
@@ -33,7 +40,7 @@ int PrintConsole(lua_State* luaState)
 }
 
 // graphics
-int CreateSprite(lua_State* luaState)
+int createSprite(lua_State* luaState)
 {
 	sf::Texture texture;
 	texture.setSmooth(true); //antialiasing
@@ -68,11 +75,19 @@ int setupFont(lua_State* luaState)
 }
 */
 
-int CreateText(lua_State* luaState)
+int createSound(lua_State* luaState)
+{
+	//lua_pushlightuserdata(luaState, 1);
+	//lua_push
+
+	return 1;
+}
+
+int createText(lua_State* luaState)
 {
 	sf::Font font;
 	if (!font.loadFromFile(script.GetArgument<char*>(2)))
-	{
+	{		
 		if (!font.loadFromFile(ERROR_FONT))
 			return ERROR_LOAD;
 	}
@@ -90,7 +105,7 @@ int CreateText(lua_State* luaState)
 	return 0;
 }
 
-int SetBackground(lua_State* luaState)
+int setBackground(lua_State* luaState)
 {
 	sf::Texture texture;
 	texture.setSmooth(true); //antialiasing
@@ -106,4 +121,140 @@ int SetBackground(lua_State* luaState)
 	addAllocator(sprite, texture);
 
 	return 0;
+}
+
+// input/output handler
+int isMouseButtonPressed(lua_State* luaState)
+{
+	char* keyPressed = script.GetArgument<char*>(1);
+	sf::Mouse::Button enumKey;
+
+	if (keyPressed == "MOUSE_LEFT")
+		enumKey = sf::Mouse::Left;
+	else if(keyPressed == "MOUSE_RIGHT")
+		enumKey = sf::Mouse::Right;
+	else if (keyPressed == "MOUSE_MIDDLE")
+		enumKey = sf::Mouse::Middle;
+	else if (keyPressed == "MOUSE_4")
+		enumKey = sf::Mouse::XButton1;
+	else if (keyPressed == "MOUSE_5")
+		enumKey = sf::Mouse::XButton2;
+
+	if (sf::Mouse::isButtonPressed(enumKey))
+		lua_pushboolean(luaState, true);
+	else
+		lua_pushboolean(luaState, false);
+
+	return 1;
+}
+
+int isKeyboardButtonPressed(lua_State* luaState)
+{
+	char* keyPressed = script.GetArgument<char*>(1);
+	sf::Keyboard::Key enumKey;
+
+	if (keyPressed == "KEY_A")
+		enumKey = sf::Keyboard::A;
+	else if (keyPressed == "KEY_B")
+		enumKey = sf::Keyboard::B;
+	else if (keyPressed == "KEY_C")
+		enumKey = sf::Keyboard::C;
+	else if (keyPressed == "KEY_D")
+		enumKey = sf::Keyboard::D;
+	else if (keyPressed == "KEY_E")
+		enumKey = sf::Keyboard::E;
+	else if (keyPressed == "KEY_F")
+		enumKey = sf::Keyboard::F;
+	else if (keyPressed == "KEY_G")
+		enumKey = sf::Keyboard::G;
+	else if (keyPressed == "KEY_H")
+		enumKey = sf::Keyboard::H;
+	else if (keyPressed == "KEY_I")
+		enumKey = sf::Keyboard::I;
+	else if (keyPressed == "KEY_J")
+		enumKey = sf::Keyboard::J;
+	else if (keyPressed == "KEY_K")
+		enumKey = sf::Keyboard::K;
+	else if (keyPressed == "KEY_L")
+		enumKey = sf::Keyboard::L;
+	else if (keyPressed == "KEY_M")
+		enumKey = sf::Keyboard::M;
+	else if (keyPressed == "KEY_N")
+		enumKey = sf::Keyboard::N;
+	else if (keyPressed == "KEY_O")
+		enumKey = sf::Keyboard::O;
+	else if (keyPressed == "KEY_P")
+		enumKey = sf::Keyboard::P;
+	else if (keyPressed == "KEY_Q")
+		enumKey = sf::Keyboard::Q;
+	else if (keyPressed == "KEY_R")
+		enumKey = sf::Keyboard::R;
+	else if (keyPressed == "KEY_S")
+		enumKey = sf::Keyboard::S;
+	else if (keyPressed == "KEY_T")
+		enumKey = sf::Keyboard::T;
+	else if (keyPressed == "KEY_U")
+		enumKey = sf::Keyboard::U;
+	else if (keyPressed == "KEY_V")
+		enumKey = sf::Keyboard::V;
+	else if (keyPressed == "KEY_W")
+		enumKey = sf::Keyboard::W;
+	else if (keyPressed == "KEY_X")
+		enumKey = sf::Keyboard::X;
+	else if (keyPressed == "KEY_Y")
+		enumKey = sf::Keyboard::Y;
+	else if (keyPressed == "KEY_Z")
+		enumKey = sf::Keyboard::Z;
+	else if (keyPressed == "KEY_0")
+		enumKey = sf::Keyboard::Num0;
+	else if (keyPressed == "KEY_1")
+		enumKey = sf::Keyboard::Num1;
+	else if (keyPressed == "KEY_2")
+		enumKey = sf::Keyboard::Num2;
+	else if (keyPressed == "KEY_3")
+		enumKey = sf::Keyboard::Num3;
+	else if (keyPressed == "KEY_4")
+		enumKey = sf::Keyboard::Num4;
+	else if (keyPressed == "KEY_5")
+		enumKey = sf::Keyboard::Num5;
+	else if (keyPressed == "KEY_6")
+		enumKey = sf::Keyboard::Num6;
+	else if (keyPressed == "KEY_7")
+		enumKey = sf::Keyboard::Num7;
+	else if (keyPressed == "KEY_8")
+		enumKey = sf::Keyboard::Num8;
+	else if (keyPressed == "KEY_9")
+		enumKey = sf::Keyboard::Num9;
+	else if (keyPressed == "KEY_F1")
+		enumKey = sf::Keyboard::F1;
+	else if (keyPressed == "KEY_F2")
+		enumKey = sf::Keyboard::F2;
+	else if (keyPressed == "KEY_F3")
+		enumKey = sf::Keyboard::F3;
+	else if (keyPressed == "KEY_F4")
+		enumKey = sf::Keyboard::F4;
+	else if (keyPressed == "KEY_F5")
+		enumKey = sf::Keyboard::F5;
+	else if (keyPressed == "KEY_F6")
+		enumKey = sf::Keyboard::F6;
+	else if (keyPressed == "KEY_F7")
+		enumKey = sf::Keyboard::F7;
+	else if (keyPressed == "KEY_F8")
+		enumKey = sf::Keyboard::F8;
+	else if (keyPressed == "KEY_F9")
+		enumKey = sf::Keyboard::F9;
+	else if (keyPressed == "KEY_F10")
+		enumKey = sf::Keyboard::F10;
+	else if (keyPressed == "KEY_F11")
+		enumKey = sf::Keyboard::F11;
+	else if (keyPressed == "KEY_F12")
+		enumKey = sf::Keyboard::F12;
+	// TODO: added more keys
+
+	if (sf::Keyboard::isKeyPressed(enumKey))
+		lua_pushboolean(luaState, true);
+	else
+		lua_pushboolean(luaState, false);
+
+	return 1;
 }
