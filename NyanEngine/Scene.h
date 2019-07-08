@@ -11,5 +11,4 @@ public:
 	size_t Frame;
 	std::string Texture;
 	std::vector<Dialog> dialogs; // Вектор диалогов
-	std::vector<Sound> sounds; // Вектор звуков
 };
