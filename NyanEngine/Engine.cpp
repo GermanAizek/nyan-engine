@@ -18,6 +18,9 @@ int initEngine()
 	addLogFile("Initializing engine...");
 	// TODO: Посмотреть аниме
 
+	// start system clock
+	startSysClock = std::chrono::high_resolution_clock::now();
+
 	// HACK: Должен проверять наличие всех файлов
 	bool dir = /*(checkDir("content/textures/1.jpg") &&*/ checkDir("user/nyan.log");
 
