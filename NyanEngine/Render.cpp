@@ -18,10 +18,10 @@ extern SceneSettings scene_token;
 std::mutex threadMutex;
 std::vector<std::exception_ptr> exceptions;
 
-void startScript(std::string nameFile)
+int startScript(std::string nameFile)
 {
 	std::stringstream currentPath;
-	currentPath << "content//scripts//" << nameFile << ".lua";
+	currentPath << "content//scripts//" << nameFile;
 
 	try
 	{
@@ -36,11 +36,18 @@ void startScript(std::string nameFile)
 		//lua_pushcfunction(luaState, getproxy);
 		//lua_setglobal(luaState, "getproxy");
 
+		// system
+		script.RegisterConstant<lua_CFunction>(assertExpression, "assert");
+		script.RegisterConstant<lua_CFunction>(runScript, "RunScript");
+		//script.RegisterConstant<lua_CFunction>(color, "Color");
+		script.RegisterConstant<lua_CFunction>(getSysTime, "SysTime");
 		// constants
 		script.RegisterConstant<lua_CFunction>(getScreenWidth, "ScrW");
 		script.RegisterConstant<lua_CFunction>(getScreenHeight, "ScrH");
 		// console
 		script.RegisterConstant<lua_CFunction>(printConsole, "Msg");
+		// sounds
+		script.RegisterConstant<lua_CFunction>(emitSound, "EmitSound");
 		// graphics
 		script.Array();
 		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");
@@ -68,7 +75,11 @@ void startScript(std::string nameFile)
 	{
 		std::lock_guard<std::mutex> lock(threadMutex);
 		exceptions.push_back(std::current_exception());
+	
+		return 1;
 	}
+
+	return 0;
 }
 
 void addAllocator(sf::Sprite& sprite, sf::Texture& texture)
@@ -129,7 +140,7 @@ size_t renderDeviceSFML()
 	/*
 	exceptions.clear();
 
-	std::thread threadDraw(startScript, "init");
+	std::thread threadDraw(startScript, "init.lua");
 	threadDraw.detach();
 
 	for (auto& error : exceptions)
@@ -181,7 +192,7 @@ size_t renderDeviceSFML()
 			// create thread think drawer
 			exceptions.clear();
 
-			std::thread threadDraw(startScript, "think");
+			std::thread threadDraw(startScript, "think.lua");
 			threadDraw.join();
 
 			for (auto& error : exceptions)
