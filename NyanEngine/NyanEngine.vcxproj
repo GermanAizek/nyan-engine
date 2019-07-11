@@ -206,13 +206,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>Create</PrecompiledHeader>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\GIT\nyanengine\NyanEngine;$(SolutionDir)SDK\json-develop\single_include\nlohmann;$(SolutionDir)SDK\boost_1_66_0;$(SolutionDir)SDK\SFML\x64\include;$(SolutionDir)SDK\imgui;$(SolutionDir)SDK\lua53\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NyanEngine;$(SolutionDir)SDK\json-develop\single_include\nlohmann;$(SolutionDir)SDK\SFML\x64\include;$(SolutionDir)SDK\imgui;$(SolutionDir)SDK\lua53\include</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessToFile>false</PreprocessToFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -278,7 +278,6 @@
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="Script.h" />
-    <ClInclude Include="ScriptRender.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -296,7 +295,6 @@
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Render.cpp" />
     <ClCompile Include="Script.cpp" />
-    <ClCompile Include="ScriptRender.cpp" />
     <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -33,17 +33,11 @@
     <ClInclude Include="Parser.h">
       <Filter>Engine\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="SoundManager.h">
-      <Filter>Engine\Sound Manager</Filter>
-    </ClInclude>
     <ClInclude Include="Script.h">
       <Filter>Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="ErrorLogger.h">
       <Filter>Engine\Error Logger</Filter>
-    </ClInclude>
-    <ClInclude Include="ScriptRender.h">
-      <Filter>Engine\Script</Filter>
     </ClInclude>
     <ClInclude Include="EngineFunctions_Lua.h">
       <Filter>Engine\Script</Filter>
@@ -56,6 +50,9 @@
     <ClInclude Include="Render.h">
       <Filter>Engine\Render</Filter>
     </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Engine\Sound Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
@@ -63,9 +60,6 @@
     </ClCompile>
     <ClCompile Include="Parser.cpp">
       <Filter>Engine\Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundManager.cpp">
-      <Filter>Engine\Sound Manager</Filter>
     </ClCompile>
     <ClCompile Include="Script.cpp">
       <Filter>Engine\Script</Filter>
@@ -75,9 +69,6 @@
     </ClCompile>
     <ClCompile Include="ErrorLogger.cpp">
       <Filter>Engine\Error Logger</Filter>
-    </ClCompile>
-    <ClCompile Include="ScriptRender.cpp">
-      <Filter>Engine\Script</Filter>
     </ClCompile>
     <ClCompile Include="EngineFunctions_Lua.cpp">
       <Filter>Engine\Script</Filter>
@@ -99,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="..\SDK\imgui\imgui_widgets.cpp">
       <Filter>Engine\Render\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Engine\Sound Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
