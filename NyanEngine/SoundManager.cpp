@@ -1,3 +1,12 @@
 #include "stdafx.h"
 #include "SoundManager.h"
-// TODO: Создать звуковой менеджер который может воспроизводить асинхронно или принадлежно объекту
+#include "ErrorLogger.h"
+
+sf::Sound loadSound(const char* filename)
+{
+	sf::SoundBuffer buffer;
+	if (!buffer.loadFromFile(filename))
+		addLogFile("sound not loaded!");
+
+	return sf::Sound(buffer);
+}

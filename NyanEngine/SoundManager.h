@@ -1,7 +1,3 @@
 #pragma once
 
-class Sound {
-public:
-	std::string Name;
-	std::string Path;
-};
+sf::Sound loadSound(const char* filename);
