@@ -4,11 +4,16 @@
 
 extern Script script;
 
+int assertExpression(lua_State* luaState);
+int exitApplication(lua_State* luaState);
+int getSysTime(lua_State* luaState);
+int runScript(lua_State* luaState);
 int getScreenWidth(lua_State* luaState);
 int getScreenHeight(lua_State* luaState);
 int printConsole(lua_State* luaState);
 int createSprite(lua_State* luaState);
-int createSound(lua_State* luaState);
+int emitSound(lua_State* luaState);
+int emitMusic(lua_State* luaState);
 int createText(lua_State* luaState);
 int setBackground(lua_State* luaState);
 int isMouseButtonPressed(lua_State* luaState);

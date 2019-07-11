@@ -1,12 +1,88 @@
 #include "stdafx.h"
 #include "EngineFunctions_Lua.h"
-//#include "EngineFunctions.h"
+#include "Engine.h"
 #include "Render.h"
+#include "SoundManager.h"
 #include "Script.h"
-//#include "ScriptRender.h"
+
 // TODO: Добавить больше методов функций для работы с движком
 
 Script script;
+
+// global functions
+
+// system
+int assertExpression(lua_State* luaState)
+{
+	if (script.GetArgument</*std::any*/int>(1))//.has_value())
+		lua_pushboolean(luaState, true);
+	else
+		lua_pushboolean(luaState, false);
+
+	return 1;
+}
+
+int exitApplication(lua_State* luaState)
+{
+	Core::criticalError = true;
+
+	return 0;
+}
+
+int color(lua_State* luaState)
+{
+	auto getColor = []() {
+		sf::Color color;
+		color.r = script.GetArgument<int>(1);
+		color.g = script.GetArgument<int>(2);
+		color.b = script.GetArgument<int>(3);
+		color.a = script.GetArgument<int>(4);
+
+		//return color;
+	};
+
+	// TODO: return array or data (class sf::Color)
+
+	//lua_pushcclosure(luaState, getColor);
+
+	return 1;
+}
+
+int colorRandom(lua_State* luaState)
+{
+	auto getColor = []() {
+		sf::Color color;
+		color.r = script.GetArgument<int>(1);
+		color.g = script.GetArgument<int>(2);
+		color.b = script.GetArgument<int>(3);
+		color.a = script.GetArgument<int>(4);
+
+		return color;
+	};
+
+	//lua_pushlightuserdata(luaState, getColor);
+	
+
+	return 1;
+}
+
+int getSysTime(lua_State* luaState)
+{
+	auto sysTime = startSysClock.time_since_epoch();
+	lua_pushnumber(luaState, sysTime.count() / (1000000000.0 * 60.0 * 60.0));
+
+	return 1;
+}
+
+int runScript(lua_State* luaState)
+{
+	if (!startScript(script.GetArgument<char*>(1)))
+		lua_pushboolean(luaState, true);
+	else
+		lua_pushboolean(luaState, false);
+
+	return 1;
+}
 
 // constants
 int getScreenWidth(lua_State* luaState)
@@ -75,14 +151,6 @@ int setupFont(lua_State* luaState)
 }
 */
 
-int createSound(lua_State* luaState)
-{
-	//lua_pushlightuserdata(luaState, 1);
-	//lua_push
-
-	return 1;
-}
-
 int createText(lua_State* luaState)
 {
 	sf::Font font;
@@ -117,10 +185,58 @@ int setBackground(lua_State* luaState)
 
 	sf::Sprite sprite;
 	sf::Vector2u vec = texture.getSize();
-	sprite.setScale((double)WIDTH / (double)vec.x, (double)HEIGHT / (double)vec.y);
+	sprite.setScale(WIDTH / vec.x, HEIGHT / vec.y);
 	addAllocator(sprite, texture);
 
 	return 0;
+}
+
+// sound
+int emitSound(lua_State* luaState)
+{
+	try
+	{
+		sf::Sound sound = loadSound(script.GetArgument<char*>(1));
+		sound.play();
+		sound.setVolume(100.f);
+
+		//addAllocatorSound(sound);
+
+		//double* pos = script.GetArgument<double*>(2);
+		//if (pos)
+		//	sound.setPosition(pos[0], pos[1], pos[2]);
+
+		lua_pushboolean(luaState, true);
+		return 1;
+	}
+	catch (...)
+	{
+		lua_pushboolean(luaState, false);
+		return 1;
+	}
+}
+
+int emitMusic(lua_State* luaState)
+{
+	try
+	{
+		sf::Music music;
+		if (!music.openFromFile(script.GetArgument<char*>(1)))
+		{
+			lua_pushboolean(luaState, false);
+			throw "Music not loaded";
+		}
+
+		music.play();
+
+		lua_pushboolean(luaState, true);
+		return 1;
+	}
+	catch (...)
+	{
+		lua_pushboolean(luaState, false);
+		return 1;
+	}
 }
 
 // input/output handler
