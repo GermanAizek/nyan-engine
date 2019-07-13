@@ -180,6 +180,14 @@ double Script::GetArgument<double>(int index)
 }
 
 template<>
+int* Script::GetArgument<int*>(int index)
+{
+	return (int*)lua_topointer(lua_state, index);
+	//return (double*)lua_tonumber(lua_state, index);
+	//return (double*)lua_touserdata(lua_state, index);
+}
+
+template<>
 char* Script::GetArgument<char*>(int index)
 {
 	return (char*)lua_tostring(lua_state, index);
