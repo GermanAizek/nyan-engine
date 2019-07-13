@@ -202,12 +202,15 @@ int emitSound(lua_State* luaState)
 
 		//addAllocatorSound(sound);
 
-		//double* pos = script.GetArgument<double*>(2);
-		//if (pos)
-		//	sound.setPosition(pos[0], pos[1], pos[2]);
+		int* pos = script.GetArgument<int*>(2);
+		if (pos)
+			sound.setPosition(pos[0], pos[1], pos[2]);
 
-		lua_pushboolean(luaState, true);
-		return 1;
+		//lua_pushboolean(luaState, true);
+		lua_pushinteger(luaState, pos[0]);
+		lua_pushinteger(luaState, pos[1]);
+		lua_pushinteger(luaState, pos[2]);
+		return 3;
 	}
 	catch (...)
 	{
