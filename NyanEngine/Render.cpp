@@ -4,7 +4,6 @@
 #include "ErrorLogger.h"
 //#include "Script.h"
 #include "EngineFunctions_Lua.h"
-#include "ScriptRender.h"
 #include "Engine.h"
 #include "Console.h"
 
@@ -27,6 +26,12 @@ int startScript(std::string nameFile)
 	{
 		lua_State* luaState = script.Create();
 
+		// global tables
+		script.Array();
+		script.RegisterArray("_G");
+		script.Array();
+		script.RegisterArray("_MODULES");
+
 		/* create the proxy metatable */
 		//luaL_newmetatable(luaState, "proxy");
 		//lua_pushcfunction(luaState, proxy);
@@ -38,6 +43,7 @@ int startScript(std::string nameFile)
 
 		// system
 		script.RegisterConstant<lua_CFunction>(assertExpression, "assert");
+		script.RegisterConstant<lua_CFunction>(exitApplication, "exit");
 		script.RegisterConstant<lua_CFunction>(runScript, "RunScript");
 		//script.RegisterConstant<lua_CFunction>(color, "Color");
 		script.RegisterConstant<lua_CFunction>(getSysTime, "SysTime");
@@ -48,6 +54,7 @@ int startScript(std::string nameFile)
 		script.RegisterConstant<lua_CFunction>(printConsole, "Msg");
 		// sounds
 		script.RegisterConstant<lua_CFunction>(emitSound, "EmitSound");
+		script.RegisterConstant<lua_CFunction>(emitMusic, "EmitMusic");
 		// graphics
 		script.Array();
 		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");
@@ -87,6 +94,11 @@ void addAllocator(sf::Sprite& sprite, sf::Texture& texture)
 	mapAllocator.push_back(std::pair<sf::Sprite, sf::Texture>(sprite, texture));
 }
 
+void addAllocatorSound(sf::Sound& sound)
+{
+	mapAllocatorSound.push_back(sound);
+}
+
 void addAllocatorText(sf::Text& text, sf::Font& font)
 {
 	mapAllocatorText.push_back(std::pair<sf::Text, sf::Font>(text, font));
@@ -108,6 +120,12 @@ void drawer(sf::RenderWindow& window, sf::Clock dt)
 		window.draw(text.first);
 	}
 
+
+	for (auto& sound : mapAllocatorSound)
+	{
+		sound.play();
+	}
+
 	ImGui::SFML::Update(window, dt.restart());
 	consoleCreate("Console");
 	ImGui::SFML::Render(window);
@@ -121,27 +139,13 @@ size_t renderDeviceSFML()
 	ImGui::SFML::Init(window);
     window.setVerticalSyncEnabled(true);
 	window.setFramerateLimit(60);
-
-	//sf::Text text(L"Привет, давай понякаемся!", font, 50);
-	//text.setString(L"Привет, давай понякаемся!");
-	//text.setPosition(250, 700);
-	//text.setFillColor(sf::Color::Cyan);
-
-	// Load a music to play
-	//sf::Music music;
-	//if (!music.openFromFile("content/sounds/musics/opening.ogg"))
-	//	return ERROR_LOAD;
-	// Play the music
-	//music.play();
 	
-	
-
 	// create thread init drawer
-	/*
+	
 	exceptions.clear();
 
-	std::thread threadDraw(startScript, "init.lua");
-	threadDraw.detach();
+	std::thread threadInit(startScript, "init.lua");
+	threadInit.join();
 
 	for (auto& error : exceptions)
 	{
@@ -155,8 +159,7 @@ size_t renderDeviceSFML()
 			std::cout << error.what() << std::endl;
 		}
 	}
-	*/
-
+	
 	/*
 	sf::Texture texture2;
 	if (!texture2.loadFromFile("content/textures/null.jpg", sf::IntRect(100, 100, 500, 500)))
@@ -164,10 +167,6 @@ size_t renderDeviceSFML()
 		cout << "1";
 	}
 	sf::Sprite spr(texture2);
-	
-
-
-
 
 	//loadSetTextureSprite(m_sprite,"content/textures/1.jpg");
 	/*
@@ -211,7 +210,7 @@ size_t renderDeviceSFML()
 
 			ImGui::SFML::ProcessEvent(GameEvent);
 
-			if (GameEvent.type == sf::Event::Closed) {
+			if (GameEvent.type == sf::Event::Closed || Core::criticalError) {
 				// shutdown render window
 				window.close();
 				// shutdown script exec
@@ -249,7 +248,6 @@ void renderScene()
 
 void loadSetTextureSprite(sf::Sprite sprite, std::string texture)
 {
-	
 	sf::Texture obj_texture;
 	if(!obj_texture.loadFromFile(texture))
 	{
