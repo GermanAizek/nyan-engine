@@ -1,7 +1,8 @@
 #pragma once
 
 // init default
-std::chrono::high_resolution_clock::time_point startSysClock;
+std::chrono::time_point<std::chrono::system_clock> systemClock;
+sf::Clock currentClock;
 
 namespace Core { // В пространстве имен обязательно статические переменные
 	extern bool criticalError = false;
