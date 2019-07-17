@@ -3,13 +3,31 @@
 
 #include <iostream>
 
+void reportErrors(lua_State* L, int status)
+{
+	if (status != 0)
+	{
+		std::cout << lua_tostring(L, -1) << '\n';
+		lua_pop(L, 1); // remove error message
+	}
+}
+
 lua_State* Script::Create()
 {
 	lua_state = luaL_newstate();
 
 	static const luaL_Reg lualibs[] = {
 		{ "base", luaopen_base },
+		{ "bit32", luaopen_bit32 },
+		{ "coroutine", luaopen_coroutine },
+		{ "debug", luaopen_debug },
 		{ "io", luaopen_io },
+		{ "math", luaopen_math },
+		{ "os", luaopen_os },
+		{ "package", luaopen_package },
+		{ "string", luaopen_string },
+		{ "table", luaopen_table },
+		{ "utf8", luaopen_utf8 },
 		{ NULL, NULL }
 	};
 

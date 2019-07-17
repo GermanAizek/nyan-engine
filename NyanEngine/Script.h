@@ -13,6 +13,8 @@ extern "C" {
 #ifndef _SCRIPT_H_
 #define _SCRIPT_H_
 
+void reportErrors(lua_State* L, int status);
+
 class Script
 {
 	lua_State *lua_state;
