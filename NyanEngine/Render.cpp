@@ -6,9 +6,9 @@
 #include "EngineFunctions_Lua.h"
 #include "Engine.h"
 #include "Console.h"
-
 #include <mutex>
 #include <sstream>
+
 
 extern Settings settings_token;
 extern GameSettings game_token;
@@ -46,7 +46,8 @@ int startScript(std::string nameFile)
 		script.RegisterConstant<lua_CFunction>(exitApplication, "exit");
 		script.RegisterConstant<lua_CFunction>(runScript, "RunScript");
 		//script.RegisterConstant<lua_CFunction>(color, "Color");
-		script.RegisterConstant<lua_CFunction>(getSysTime, "SysTime");
+		script.RegisterConstant<lua_CFunction>(getCurrentTime, "CurTime");
+		script.RegisterConstant<lua_CFunction>(getSystemTime, "SysTime");
 		// constants
 		script.RegisterConstant<lua_CFunction>(getScreenWidth, "ScrW");
 		script.RegisterConstant<lua_CFunction>(getScreenHeight, "ScrH");
@@ -61,7 +62,7 @@ int startScript(std::string nameFile)
 		script.RegisterArray("render");
 
 		script.Array();
-		script.RegisterFieldGlobal<lua_CFunction>(createText, "DrawText");
+		//script.RegisterFieldGlobal<lua_EngineText>(createText, "DrawText");
 		script.RegisterFieldGlobal<lua_CFunction>(setBackground, "DrawBackground");
 		script.RegisterArray("draw");
 
@@ -70,19 +71,35 @@ int startScript(std::string nameFile)
 		script.RegisterFieldGlobal<lua_CFunction>(isKeyboardButtonPressed, "IsKeyDown");
 		script.RegisterArray("input");
 
-		//if (lua_pcall(luaState, 0, 0, 0))
-		//{
-		//	std::cout << lua_tostring(luaState, -1) << "\n"; // returns "attempt to call a nil value"
-		//	lua_pop(luaState, 1);
-		//}
-
-		script.DoFile(currentPath.str().c_str());
+		int luaScript = script.DoFile(currentPath.str().c_str());
+		reportErrors(luaState, luaScript);
 	}
 	catch (...)
 	{
 		std::lock_guard<std::mutex> lock(threadMutex);
 		exceptions.push_back(std::current_exception());
 	
+		return 1;
+	}
+
+	return 0;
+}
+
+int connectToScript(std::string nameFile, Script& script)
+{
+	std::stringstream currentPath;
+	currentPath << "content//scripts//" << nameFile;
+
+	try
+	{
+		script.DoFile(currentPath.str().c_str());
+		//reportErrors(luaState, luaScript);
+	}
+	catch (...)
+	{
+		std::lock_guard<std::mutex> lock(threadMutex);
+		exceptions.push_back(std::current_exception());
+
 		return 1;
 	}
 
@@ -191,8 +208,8 @@ size_t renderDeviceSFML()
 			// create thread think drawer
 			exceptions.clear();
 
-			std::thread threadDraw(startScript, "think.lua");
-			threadDraw.join();
+			std::thread threadThink(connectToScript, "think.lua", script);
+			threadThink.join();
 
 			for (auto& error : exceptions)
 			{
