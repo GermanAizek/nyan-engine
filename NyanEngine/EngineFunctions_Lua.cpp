@@ -4,6 +4,7 @@
 #include "Render.h"
 #include "SoundManager.h"
 #include "Script.h"
+#include <any>
 
 // TODO: Добавить больше методов функций для работы с движком
 
@@ -14,9 +15,10 @@ Script script;
 // system
 int assertExpression(lua_State* luaState)
 {
-	if (script.GetArgument</*std::any*/int>(1))//.has_value())
+	//bool cond = script.GetArgument<bool>(1);
+	//if (lua_assert(cond))
 		lua_pushboolean(luaState, true);
-	else
+	//else
 		lua_pushboolean(luaState, false);
 
 	return 1;
@@ -25,6 +27,7 @@ int assertExpression(lua_State* luaState)
 int exitApplication(lua_State* luaState)
 {
 	Core::criticalError = true;
+	exit(0);
 
 	return 0;
 }
@@ -66,10 +69,19 @@ int colorRandom(lua_State* luaState)
 	return 1;
 }
 
-int getSysTime(lua_State* luaState)
+int getCurrentTime(lua_State* luaState)
 {
-	auto sysTime = startSysClock.time_since_epoch();
-	lua_pushnumber(luaState, sysTime.count() / (1000000000.0 * 60.0 * 60.0));
+	sf::Time sysTime = currentClock.getElapsedTime();
+	lua_pushnumber(luaState, sysTime.asSeconds());
+
+	return 1;
+}
+
+int getSystemTime(lua_State* luaState)
+{
+	// TODO: Re-edit getSystemTime, its should get seconds
+	std::time_t end_time = std::chrono::system_clock::to_time_t(systemClock);
+	lua_pushnumber(luaState, end_time);
 
 	return 1;
 }
@@ -151,32 +163,36 @@ int setupFont(lua_State* luaState)
 }
 */
 
-int createText(lua_State* luaState)
+sf::Text* createText(lua_State* luaState)//, sf::Text textObject)
 {
 	sf::Font font;
 	if (!font.loadFromFile(script.GetArgument<char*>(2)))
 	{		
 		if (!font.loadFromFile(ERROR_FONT))
-			return ERROR_LOAD;
+			return nullptr;
 	}
 
-	sf::Text text;
-	text.setString(script.GetArgument<char*>(1));
-	text.setCharacterSize(script.GetArgument<int>(3));
-	text.setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
-	text.setFillColor(sf::Color::White);
-	text.setOutlineColor(sf::Color::Black);
-	text.setOutlineThickness(2.0f);
-	text.setLineSpacing(1.1f);
-	addAllocatorText(text, font);
+	// push pointer to text
+	sf::Text* text = (sf::Text*)lua_newuserdata(luaState, sizeof(sf::Text));
+	text->setString(script.GetArgument<char*>(1));
+	text->setCharacterSize(script.GetArgument<int>(3));
+	text->setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
+	text->setFillColor(sf::Color::White);
+	text->setOutlineColor(sf::Color::Black);
+	text->setOutlineThickness(2.0f);
+	text->setLineSpacing(1.1f);
+	//*text = textObject;
+	luaL_getmetatable(luaState, "Text");
+	lua_setmetatable(luaState, -2);
 
-	return 0;
+	return text;
 }
 
 int setBackground(lua_State* luaState)
 {
 	sf::Texture texture;
 	texture.setSmooth(true); //antialiasing
+	texture.setRepeated(true);
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
 	{
 		if (!texture.loadFromFile(ERROR_TEXTURE))
@@ -189,6 +205,21 @@ int setBackground(lua_State* luaState)
 	addAllocator(sprite, texture);
 
 	return 0;
+}
+
+int setVerticalSync(lua_State* luaState)
+{
+	try
+	{
+		//script.GetArgument<sf::RenderWindow>(1).setVerticalSyncEnabled(script.GetArgument<bool>(2));
+		lua_pushboolean(luaState, true);
+		return 1;
+	}
+	catch (...)
+	{
+		lua_pushboolean(luaState, false);
+		return 1;
+	}
 }
 
 // sound
@@ -272,7 +303,27 @@ int isKeyboardButtonPressed(lua_State* luaState)
 	char* keyPressed = script.GetArgument<char*>(1);
 	sf::Keyboard::Key enumKey;
 
-	if (keyPressed == "KEY_A")
+	if (keyPressed == "KEY_0")
+		enumKey = sf::Keyboard::Num0;
+	else if (keyPressed == "KEY_1")
+		enumKey = sf::Keyboard::Num1;
+	else if (keyPressed == "KEY_2")
+		enumKey = sf::Keyboard::Num2;
+	else if (keyPressed == "KEY_3")
+		enumKey = sf::Keyboard::Num3;
+	else if (keyPressed == "KEY_4")
+		enumKey = sf::Keyboard::Num4;
+	else if (keyPressed == "KEY_5")
+		enumKey = sf::Keyboard::Num5;
+	else if (keyPressed == "KEY_6")
+		enumKey = sf::Keyboard::Num6;
+	else if (keyPressed == "KEY_7")
+		enumKey = sf::Keyboard::Num7;
+	else if (keyPressed == "KEY_8")
+		enumKey = sf::Keyboard::Num8;
+	else if (keyPressed == "KEY_9")
+		enumKey = sf::Keyboard::Num9;
+	else if (keyPressed == "KEY_A")
 		enumKey = sf::Keyboard::A;
 	else if (keyPressed == "KEY_B")
 		enumKey = sf::Keyboard::B;
@@ -324,26 +375,72 @@ int isKeyboardButtonPressed(lua_State* luaState)
 		enumKey = sf::Keyboard::Y;
 	else if (keyPressed == "KEY_Z")
 		enumKey = sf::Keyboard::Z;
-	else if (keyPressed == "KEY_0")
-		enumKey = sf::Keyboard::Num0;
-	else if (keyPressed == "KEY_1")
-		enumKey = sf::Keyboard::Num1;
-	else if (keyPressed == "KEY_2")
-		enumKey = sf::Keyboard::Num2;
-	else if (keyPressed == "KEY_3")
-		enumKey = sf::Keyboard::Num3;
-	else if (keyPressed == "KEY_4")
-		enumKey = sf::Keyboard::Num4;
-	else if (keyPressed == "KEY_5")
-		enumKey = sf::Keyboard::Num5;
-	else if (keyPressed == "KEY_6")
-		enumKey = sf::Keyboard::Num6;
-	else if (keyPressed == "KEY_7")
-		enumKey = sf::Keyboard::Num7;
-	else if (keyPressed == "KEY_8")
-		enumKey = sf::Keyboard::Num8;
-	else if (keyPressed == "KEY_9")
-		enumKey = sf::Keyboard::Num9;
+	else if (keyPressed == "KEY_PAD_0")
+		enumKey = sf::Keyboard::Numpad0;
+	else if (keyPressed == "KEY_PAD_1")
+		enumKey = sf::Keyboard::Numpad1;
+	else if (keyPressed == "KEY_PAD_2")
+		enumKey = sf::Keyboard::Numpad2;
+	else if (keyPressed == "KEY_PAD_3")
+		enumKey = sf::Keyboard::Numpad3;
+	else if (keyPressed == "KEY_PAD_4")
+		enumKey = sf::Keyboard::Numpad4;
+	else if (keyPressed == "KEY_PAD_5")
+		enumKey = sf::Keyboard::Numpad5;
+	else if (keyPressed == "KEY_PAD_6")
+		enumKey = sf::Keyboard::Numpad6;
+	else if (keyPressed == "KEY_PAD_7")
+		enumKey = sf::Keyboard::Numpad7;
+	else if (keyPressed == "KEY_PAD_8")
+		enumKey = sf::Keyboard::Numpad8;
+	else if (keyPressed == "KEY_PAD_9")
+		enumKey = sf::Keyboard::Numpad9;
+	else if (keyPressed == "KEY_PAD_DIVIDE")
+		enumKey = sf::Keyboard::Divide;
+	else if (keyPressed == "KEY_PAD_MULTIPLY")
+		enumKey = sf::Keyboard::Multiply;
+	//else if (keyPressed == "KEY_PAD_MINUS")
+		//enumKey = sf::Keyboard::Subtract; // !
+	//else if (keyPressed == "KEY_PAD_PLUS")
+		//enumKey = sf::Keyboard::Add; // !
+	//else if (keyPressed == "KEY_PAD_ENTER")
+		//enumKey = sf::Keyboard::Enter; // !
+	//else if (keyPressed == "KEY_PAD_DECIMAL")
+		//enumKey = sf::Keyboard::Dash; // !
+	else if (keyPressed == "KEY_LBRACKET")
+		enumKey = sf::Keyboard::LBracket;
+	else if (keyPressed == "KEY_RBRACKET")
+		enumKey = sf::Keyboard::RBracket;
+	else if (keyPressed == "KEY_SEMICOLON")
+		enumKey = sf::Keyboard::Semicolon;
+	//else if (keyPressed == "KEY_APOSTROPHE")
+		//enumKey = sf::Keyboard::apost;
+	//else if (keyPressed == "KEY_BACKQUOTE")
+		//enumKey = sf::Keyboard::backquote;
+	else if (keyPressed == "KEY_COMMA")
+		enumKey = sf::Keyboard::Comma;
+	else if (keyPressed == "KEY_PERIOD")
+		enumKey = sf::Keyboard::Period;
+	else if (keyPressed == "KEY_SLASH")
+		enumKey = sf::Keyboard::Slash;
+	else if (keyPressed == "KEY_BACKSLASH")
+	enumKey = sf::Keyboard::Backslash;
+	//else if (keyPressed == "KEY_MINUS")
+	//enumKey = sf::Keyboard::Subtract;
+	else if (keyPressed == "KEY_EQUAL")
+		enumKey = sf::Keyboard::Equal;
+	else if (keyPressed == "KEY_ENTER")
+		enumKey = sf::Keyboard::Enter;
+	else if (keyPressed == "KEY_SPACE")
+		enumKey = sf::Keyboard::Space;
+	else if (keyPressed == "KEY_BACKSPACE")
+		enumKey = sf::Keyboard::Backspace;
+	else if (keyPressed == "KEY_TAB")
+		enumKey = sf::Keyboard::Tab;
+	else if (keyPressed == "KEY_ESCAPE")
+		enumKey = sf::Keyboard::Escape;
+	//else if (keyPressed == "")
+	//	enumKey = sf::Keyboard::;
 	else if (keyPressed == "KEY_F1")
 		enumKey = sf::Keyboard::F1;
 	else if (keyPressed == "KEY_F2")
@@ -368,6 +465,7 @@ int isKeyboardButtonPressed(lua_State* luaState)
 		enumKey = sf::Keyboard::F11;
 	else if (keyPressed == "KEY_F12")
 		enumKey = sf::Keyboard::F12;
+	
 	// TODO: added more keys
 
 	if (sf::Keyboard::isKeyPressed(enumKey))
