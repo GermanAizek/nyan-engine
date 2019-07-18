@@ -27,7 +27,7 @@ int assertExpression(lua_State* luaState)
 int exitApplication(lua_State* luaState)
 {
 	Core::criticalError = true;
-	exit(0);
+	exit(EXIT_SUCCESS);
 
 	return 0;
 }
