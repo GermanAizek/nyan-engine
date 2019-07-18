@@ -59,10 +59,11 @@ int startScript(std::string nameFile)
 		// graphics
 		script.Array();
 		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");
+		//script.RegisterFieldGlobal<lua_CFunction>(setVerticalSync, "SetVSync");
 		script.RegisterArray("render");
 
 		script.Array();
-		//script.RegisterFieldGlobal<lua_EngineText>(createText, "DrawText");
+		//script.RegisterFieldGlobal<lua_CFunction>(createText, "DrawText");
 		script.RegisterFieldGlobal<lua_CFunction>(setBackground, "DrawBackground");
 		script.RegisterArray("draw");
 
@@ -144,7 +145,13 @@ void drawer(sf::RenderWindow& window, sf::Clock dt)
 	}
 
 	ImGui::SFML::Update(window, dt.restart());
-	consoleCreate("Console");
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
+		consoleOpened ? consoleOpened = false : consoleOpened = true;
+
+	if (consoleOpened)
+		consoleCreate("Console");
+
 	ImGui::SFML::Render(window);
 
 	window.display();

@@ -4,3 +4,5 @@
 
 void consoleCreate(const char* name);
 size_t consoleHandler();
+
+bool consoleOpened = false;
