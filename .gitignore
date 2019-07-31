@@ -6,3 +6,5 @@ ipch/
 *.log
 *.lastbuildstate
 NyanEngine/x64/
+editor/x64/Release/
+editor/GeneratedFiles/
