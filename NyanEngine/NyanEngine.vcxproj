@@ -210,9 +210,9 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>SFML_STATIC;_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(SolutionDir)NyanEngine;$(SolutionDir)SDK\json-develop\single_include\nlohmann;$(SolutionDir)SDK\SFML\x64\include;$(SolutionDir)SDK\imgui;$(SolutionDir)SDK\lua53\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)NyanEngine;$(SolutionDir)SDK\json-develop\single_include\nlohmann;$(SolutionDir)SDK\SFML\x64\include;$(SolutionDir)SDK\imgui;$(SolutionDir)SDK\lua53\include;$(SolutionDir)SDK\Box2D</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PreprocessToFile>false</PreprocessToFile>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
