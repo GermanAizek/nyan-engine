@@ -84,7 +84,6 @@ int initEngine()
 int main(size_t argc, char* argv[])
 {
 	std::ios_base::sync_with_stdio(0);
-	system("title Engine log");
 
 	#pragma omp for
 	for (int i = 1; i < argc; ++i)
@@ -103,8 +102,6 @@ int main(size_t argc, char* argv[])
 			Core::debugmode = true;
 		}
 	}
-
-	std::cout << "Hello friend! Welcome to Nyan Engine by GermanAizek\n";
 
 	if (Core::debugmode)
 	{
@@ -191,13 +188,11 @@ int main(size_t argc, char* argv[])
 		//
 	}
 
-	//initThreadManager();
-
 	if (!Core::benchmode)
 		initEngine();
 	else
 	{
-		std::cout << "Start benchmark!\n";
+		addLogFile("Start benchmark!\n");
 
 		#pragma omp for
 		for (int i = 0; i < 10; ++i) // Take avg time
@@ -207,7 +202,7 @@ int main(size_t argc, char* argv[])
 			initEngine();
 			auto end = std::chrono::high_resolution_clock::now();
 
-			std::cout << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() << "ns\n";
+			addLogFile("Init engine time: " + std::to_string(std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count()) + "ns\n");
 		}
 	}
 
