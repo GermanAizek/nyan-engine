@@ -8,9 +8,6 @@
 
 //typedef sf::Text* (*lua_EngineText) (lua_State* L);
 
-size_t WIDTH = sf::VideoMode::getDesktopMode().width;
-size_t HEIGHT = sf::VideoMode::getDesktopMode().height;
-
 int startScript(std::string nameFile);
 int connectToScript(std::string nameFile, Script& script);
 
@@ -25,8 +22,16 @@ std::vector<std::pair<sf::Sprite, sf::Texture>> mapAllocator;
 std::vector<std::pair<sf::Text, sf::Font>> mapAllocatorText;
 std::vector<sf::Sound> mapAllocatorSound;
 
+/*
+b2Vec2 physGravity(0.f, 9.8f);
+b2World physSpace(physGravity);
+*/
+
 enum IDRender
 {
 	ERROR_FILE,
 	ERROR_LOAD
 };
+
+size_t WIDTH = sf::VideoMode::getDesktopMode().width;
+size_t HEIGHT = sf::VideoMode::getDesktopMode().height;

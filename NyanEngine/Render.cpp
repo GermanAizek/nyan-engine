@@ -60,6 +60,7 @@ int startScript(std::string nameFile)
 		script.Array();
 		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");
 		//script.RegisterFieldGlobal<lua_CFunction>(setVerticalSync, "SetVSync");
+		script.RegisterFieldGlobal<lua_CFunction>(changeCursor, "SetCursor");
 		script.RegisterArray("render");
 
 		script.Array();
@@ -72,8 +73,7 @@ int startScript(std::string nameFile)
 		script.RegisterFieldGlobal<lua_CFunction>(isKeyboardButtonPressed, "IsKeyDown");
 		script.RegisterArray("input");
 
-		int luaScript = script.DoFile(currentPath.str().c_str());
-		reportErrors(luaState, luaScript);
+		script.DoFile(currentPath.str().c_str());
 	}
 	catch (...)
 	{
@@ -129,6 +129,21 @@ void drawer(sf::RenderWindow& window, sf::Clock dt)
 	for (auto& sprite : mapAllocator)
 	{
 		sprite.first.setTexture(sprite.second);
+
+		// physics
+		/*
+		for (b2Body* it = physSpace.GetBodyList(); it != 0; it = it->GetNext())
+		{
+			if (it->GetUserData() == "sprite")
+			{
+				b2Vec2 pos = it->GetPosition();
+				float angle = it->GetAngle();
+				sprite.first.setPosition(pos.x, pos.y);
+				sprite.first.setRotation(angle);
+			}
+		}
+		*/
+
 		window.draw(sprite.first);
 	}
 
@@ -159,10 +174,21 @@ void drawer(sf::RenderWindow& window, sf::Clock dt)
 
 size_t renderDeviceSFML()
 {
+	/*
+	for (auto& mode : sf::VideoMode::getFullscreenModes())
+	{
+		std::cout << mode.bitsPerPixel << mode.width << mode.width << '\n';
+	}
+	*/
+
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "build", sf::Style::Fullscreen);
+	window.setSize(sf::Vector2u(WIDTH, HEIGHT));
+	window.setTitle("nyanengine");
+	window.setActive(true);
+	window.setFramerateLimit(60);
+	//window.setIcon(64, 64, icon);
 	ImGui::SFML::Init(window);
     window.setVerticalSyncEnabled(true);
-	window.setFramerateLimit(60);
 	
 	// create thread init drawer
 	
@@ -180,7 +206,7 @@ size_t renderDeviceSFML()
 		}
 		catch (const std::exception& error)
 		{
-			std::cout << error.what() << std::endl;
+			addLogFile(error.what());
 		}
 	}
 	
@@ -209,6 +235,12 @@ size_t renderDeviceSFML()
 	sf::Clock dt;
 	while (window.isOpen())
 	{
+		/*
+		sf::Cursor cursor;
+		if (cursor.loadFromSystem(sf::Cursor::Wait))
+			window.setMouseCursor(cursor);
+		*/
+
 		sf::Event GameEvent;
 		if (window.pollEvent(GameEvent))
 		{
@@ -227,7 +259,7 @@ size_t renderDeviceSFML()
 				}
 				catch (const std::exception& error)
 				{
-					std::cout << error.what() << std::endl;
+					addLogFile(error.what());
 				}
 			}
 			//
