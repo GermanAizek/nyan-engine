@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "Script.h"
+#include "ErrorLogger.h"
 
 #include <iostream>
 
 void reportErrors(lua_State* L, int status)
 {
-	if (status != 0)
-	{
-		std::cout << lua_tostring(L, -1) << '\n';
-		lua_pop(L, 1); // remove error message
-	}
+	
 }
 
 lua_State* Script::Create()
@@ -47,12 +44,13 @@ void Script::Close()
 
 int Script::DoFile(const char* fileName)
 {
-	auto ret = luaL_dofile(lua_state, fileName);
+	auto status = luaL_dofile(lua_state, fileName);
 
-	if (ret != 0)
+	if (status != 0)
 	{
-		std::cout << "Hint Machine 0x%x " << ret << "\n";
-		std::cout << "Error: " << lua_tostring(lua_state, -1) << "\n";
+		std::string error = lua_tostring(lua_state, -1);
+		addLogFile("[ERROR] " + error);
+		lua_pop(lua_state, 1); // remove error message
 	}
 
 	return lua_tointeger(lua_state, lua_gettop(lua_state));
