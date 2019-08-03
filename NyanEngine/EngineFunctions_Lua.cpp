@@ -5,6 +5,7 @@
 #include "SoundManager.h"
 #include "Script.h"
 #include <any>
+#include <Box2D/Box2D.h>
 
 // TODO: Добавить больше методов функций для работы с движком
 
@@ -142,6 +143,21 @@ int createSprite(lua_State* luaState)
 	sf::Sprite sprite(texture);
 	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
 	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
+
+	// physics
+	/*
+	b2PolygonShape shape;
+	shape.SetAsBox(sprite.getScale().x, sprite.getScale().y);
+
+	b2BodyDef bodyDef;
+	bodyDef.type = b2_dynamicBody;
+	bodyDef.position.Set(sprite.getPosition().x, sprite.getPosition().y);
+
+	b2Body* bodySprite = physSpace.CreateBody(&bodyDef);
+	bodySprite->CreateFixture(&shape, 1);
+	bodySprite->SetUserData("sprite");
+	*/
+
 	addAllocator(sprite, texture);
 
 	return 0;
@@ -196,7 +212,10 @@ int setBackground(lua_State* luaState)
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
 	{
 		if (!texture.loadFromFile(ERROR_TEXTURE))
+		{
+			std::cout << script.GetArgument<char*>(1);
 			return ERROR_LOAD;
+		}
 	}
 
 	sf::Sprite sprite;
@@ -220,6 +239,68 @@ int setVerticalSync(lua_State* luaState)
 		lua_pushboolean(luaState, false);
 		return 1;
 	}
+}
+
+int changeCursor(lua_State* luaState)
+{
+	sf::Cursor cursor;
+	sf::Cursor::Type cursorType;
+
+	char* stateCursor = script.GetArgument<char*>(1);
+
+	if (!strcmp(stateCursor, "arrow"))
+		cursorType = sf::Cursor::Arrow;
+	else if (!strcmp(stateCursor, "waitarrow"))
+		cursorType = sf::Cursor::ArrowWait;
+	else if (!strcmp(stateCursor, "wait"))
+		cursorType = sf::Cursor::Wait;
+	else if (!strcmp(stateCursor, "text"))
+		cursorType = sf::Cursor::Text;
+	else if (!strcmp(stateCursor, "hand"))
+		cursorType = sf::Cursor::Hand;
+	else if (strcmp(stateCursor, "sizehorizontal"))
+		cursorType = sf::Cursor::SizeHorizontal;
+	else if (strcmp(stateCursor, "sizevertical"))
+		cursorType = sf::Cursor::SizeVertical;
+	else if (strcmp(stateCursor, "sizetopleftbottomright"))
+		cursorType = sf::Cursor::SizeTopLeftBottomRight;
+	else if (strcmp(stateCursor, "sizebottomlefttopright"))
+		cursorType = sf::Cursor::SizeBottomLeftTopRight;
+	else if (strcmp(stateCursor, "sizeall"))
+		cursorType = sf::Cursor::SizeAll;
+	else if (strcmp(stateCursor, "cross"))
+		cursorType = sf::Cursor::Cross;
+	else if (strcmp(stateCursor, "help"))
+		cursorType = sf::Cursor::Help;
+	else if (strcmp(stateCursor, "notallowed"))
+		cursorType = sf::Cursor::NotAllowed;
+	else
+	{
+		// custom cursor
+		sf::Image cursorImage;
+		if (cursorImage.loadFromFile(stateCursor))
+		{
+			int hotspotx = script.GetArgument<int>(2);
+			int hotspoty = script.GetArgument<int>(3);
+			cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), sf::Vector2u(hotspotx , hotspoty));
+		}
+		else
+		{
+			lua_pushboolean(luaState, false);
+			return 1;
+		}
+	}
+
+	if (cursor.loadFromSystem(cursorType))
+	{
+		// TODO: Дай видимость окна блядским функциям из скриптов
+		//window.setMouseCursor(cursor);
+		lua_pushboolean(luaState, true);
+	}
+	else
+		lua_pushboolean(luaState, false);
+
+	return 1;
 }
 
 // sound

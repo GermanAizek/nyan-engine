@@ -14,6 +14,7 @@ int getScreenHeight(lua_State* luaState);
 int printConsole(lua_State* luaState);
 int createSprite(lua_State* luaState);
 int setVerticalSync(lua_State* luaState);
+int changeCursor(lua_State* luaState);
 int emitSound(lua_State* luaState);
 int emitMusic(lua_State* luaState);
 sf::Text* createText(lua_State* luaState);//, sf::Text textObject);
