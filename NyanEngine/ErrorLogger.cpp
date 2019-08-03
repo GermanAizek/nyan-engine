@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "ErrorLogger.h"
+#include "Console.h"
 
 // TODO: Добавить время когда произошла ошибка
 // TODO: Добавить больше параметров функции: (тип ошибки, ошибка, путь файла)
-void addLogFile(std::string error)
+void addLogFile(std::string_view error)
 {
 	std::ofstream log("user/nyan.log", std::ios_base::app);
 	if (log.is_open())
@@ -12,7 +13,7 @@ void addLogFile(std::string error)
 		std::string time = ctime(&t);
 		time.replace(time.find("\n"), 1, "");
 		log << "[" << time << "] " << error << "\n"; // user/nyan.log
-		std::cout << "[" << time << "] " << error << "\n"; // standart console
+		printConsole("[" + time + "] " + error.data() + '\n');
 		log.close();
 	}
 	else

@@ -2,4 +2,4 @@
 
 #include "stdafx.h"
 
-void addLogFile(std::string error);
+void addLogFile(std::string_view error);
