@@ -354,6 +354,24 @@ int emitMusic(lua_State* luaState)
 	}
 }
 
+int createRecorder(lua_State* luaState)
+{
+	sf::SoundBufferRecorder recorder;
+	recorder.start();
+
+	sf::Clock clock;
+	sf::Time elapsed = clock.getElapsedTime();
+
+	// TODO: Checking functiom elapse needs moved in main cycle
+	if (elapsed.asSeconds() == script.GetArgument<int>(1))
+	{
+		recorder.stop();
+		clock.restart();
+		sf::SoundBuffer buffer = recorder.getBuffer();
+		buffer.saveToFile("record.ogg");
+	}
+}
+
 // input/output handler
 int isMouseButtonPressed(lua_State* luaState)
 {

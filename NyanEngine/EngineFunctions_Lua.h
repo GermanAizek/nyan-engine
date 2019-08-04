@@ -17,6 +17,7 @@ int setVerticalSync(lua_State* luaState);
 int changeCursor(lua_State* luaState);
 int emitSound(lua_State* luaState);
 int emitMusic(lua_State* luaState);
+int createRecorder(lua_State* luaState);
 sf::Text* createText(lua_State* luaState);//, sf::Text textObject);
 int setBackground(lua_State* luaState);
 int isMouseButtonPressed(lua_State* luaState);
