@@ -220,7 +220,7 @@ int setBackground(lua_State* luaState)
 
 	sf::Sprite sprite;
 	sf::Vector2u vec = texture.getSize();
-	sprite.setScale(WIDTH / vec.x, HEIGHT / vec.y);
+	sprite.setScale((float) WIDTH / vec.x, (float) HEIGHT / vec.y);
 	addAllocator(sprite, texture);
 
 	return 0;
