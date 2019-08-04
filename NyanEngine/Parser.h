@@ -12,18 +12,4 @@ typedef struct Settings
 	bool devconfig = false;
 } Settings;
 
-typedef struct GameSettings
-{
-	std::string namewindow = "Nyan engine";
-	size_t countscenes = 0;
-} GameSettings;
-
-typedef struct SceneSettings
-{
-	std::string namescene = "Test";
-	size_t count_obj;
-} SceneSettings;
-
 bool parseSettings();
-bool parseGame();
-bool parseScene();

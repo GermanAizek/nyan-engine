@@ -11,8 +11,6 @@
 
 
 extern Settings settings_token;
-extern GameSettings game_token;
-extern SceneSettings scene_token;
 
 std::mutex threadMutex;
 std::vector<std::exception_ptr> exceptions;
@@ -56,6 +54,7 @@ int startScript(std::string nameFile)
 		// sounds
 		script.RegisterConstant<lua_CFunction>(emitSound, "EmitSound");
 		script.RegisterConstant<lua_CFunction>(emitMusic, "EmitMusic");
+		script.RegisterConstant<lua_CFunction>(createRecorder, "CreateRecorder");
 		// graphics
 		script.Array();
 		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");

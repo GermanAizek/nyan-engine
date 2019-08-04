@@ -10,8 +10,6 @@
 //#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // Скрыть консоль
 
 Settings settings_token;
-GameSettings game_token;
-SceneSettings scene_token;
 
 int initEngine()
 {
@@ -105,35 +103,6 @@ int main(size_t argc, char* argv[])
 
 	if (Core::debugmode)
 	{
-		/*
-		// Test LUA script
-		const char* name = "test.lua";
-		cout << "Testing Lua scripts...\n";
-		cout << "==========================\n" << name << "\n==========================\n";
-		lua_State *ls = luaL_newstate(); // создаем виртуальную машину Lua
-		luaL_openlibs(ls); // загружаем стандартные библиотеку
-		luaL_dofile(ls, name); // выполняем скрипт
-		lua_close(ls); // закрываем Lua
-		cout << "==========================\n";
-		cout << "SIZE STRUCT lua_Debug:" << sizeof(lua_Debug) << "\n";
-		cout << "SIZE PTR STRUCT CallInfo:" << sizeof(struct CallInfo*) << "\n";
-		cout << "SIZE const char*:" << sizeof(const char*) << "\n";
-		cout << "SIZE int:" << sizeof(int) << "\n";
-		cout << "SIZE char:" << sizeof(char) << "\n";
-		cout << "SIZE unsigned char:" << sizeof(unsigned char) << "\n";
-
-
-		//Test();
-		//Script script;
-		script.Create();
-		script.RegisterConstant<lua_CFunction>(Write, "Write");
-		script.RegisterConstant<lua_CFunction>(CreateBox, "CreateBox");
-		script.RegisterConstant<lua_CFunction>(SetColorSpace, "SetColorSpace");
-		script.DoFile("test.lua");
-		script.Close();
-		//
-		*/
-
 		// Test Python script
 		/*
 		PyObject *pName, *pModule, *pDict,
@@ -146,8 +115,6 @@ int main(size_t argc, char* argv[])
 				"Usage: exe_name python_fileclass_name function_name\n");
 			return 1;
 		}
-
-		// некоторый код пропущен...
 
 		// построить имя вызываемого класса
 		pClass = PyDict_GetItemString(pDict, argv[2]);
