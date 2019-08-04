@@ -176,10 +176,10 @@ int main(size_t argc, char* argv[])
 	return EXIT_SUCCESS;
 }
 
-bool checkDir(const char* path) // TODO: Проверяет только файлы в каталогах, но не каталоги
+bool checkDir(std::string_view path) // TODO: Проверяет только файлы в каталогах, но не каталоги
 {
 	std::ifstream file;
-	file.open(path);
+	file.open(path.data());
 	file.close();
 
 	// TODO: Восстановление каталогов

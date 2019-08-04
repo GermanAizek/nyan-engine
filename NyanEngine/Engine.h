@@ -11,4 +11,4 @@ namespace Core { // В пространстве имен обязательно статические переменные
 } // TODO: Косяк на косяке, но нельзя проверять режимы ядра движка в других файлах
 
 int initEngine();
-bool checkDir(const char* path);
+bool checkDir(std::string_view path);

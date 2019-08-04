@@ -22,7 +22,7 @@ class Script
 public:
 	lua_State* Create();
 	void Close();
-	int DoFile(const char* ScriptFileName);
+	int DoFile(std::string_view ScriptFileName);
 	template<class T>
 	void RegisterConstant(T value, char* constantname);
 
@@ -33,7 +33,7 @@ public:
 	void RegisterArray(char* arrayname);
 
 	template<class T>
-	void RegisterFieldGlobal(T value, const char* text);
+	void RegisterFieldGlobal(T value, std::string_view text);
 
 	int GetArgumentCount();
 	template<class T>

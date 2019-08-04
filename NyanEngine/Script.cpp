@@ -42,9 +42,9 @@ void Script::Close()
 	lua_close(lua_state);
 }
 
-int Script::DoFile(const char* fileName)
+int Script::DoFile(std::string_view fileName)
 {
-	auto status = luaL_dofile(lua_state, fileName);
+	auto status = luaL_dofile(lua_state, fileName.data());
 
 	if (status != 0)
 	{
@@ -144,38 +144,38 @@ void Script::RegisterArray(char* arrayname)
 }
 
 template<>
-void Script::RegisterFieldGlobal<int>(int value, const char* text)
+void Script::RegisterFieldGlobal<int>(int value, std::string_view text)
 {
 	lua_pushinteger(lua_state, value);
-	lua_setfield(lua_state, -2, text);
+	lua_setfield(lua_state, -2, text.data());
 }
 
 template<>
-void Script::RegisterFieldGlobal<double>(double value, const char* text)
+void Script::RegisterFieldGlobal<double>(double value, std::string_view text)
 {
 	lua_pushnumber(lua_state, value);
-	lua_setfield(lua_state, -2, text);
+	lua_setfield(lua_state, -2, text.data());
 }
 
 template<>
-void Script::RegisterFieldGlobal<char*>(char* value, const char* text)
+void Script::RegisterFieldGlobal<char*>(char* value, std::string_view text)
 {
 	lua_pushstring(lua_state, value);
-	lua_setfield(lua_state, -2, text);
+	lua_setfield(lua_state, -2, text.data());
 }
 
 template<>
-void Script::RegisterFieldGlobal<bool>(bool value, const char* text)
+void Script::RegisterFieldGlobal<bool>(bool value, std::string_view text)
 {
 	lua_pushboolean(lua_state, value);
-	lua_setfield(lua_state, -2, text);
+	lua_setfield(lua_state, -2, text.data());
 }
 
 template<>
-void Script::RegisterFieldGlobal<lua_CFunction>(lua_CFunction value, const char* text)
+void Script::RegisterFieldGlobal<lua_CFunction>(lua_CFunction value, std::string_view text)
 {
 	lua_pushcfunction(lua_state, value);
-	lua_setfield(lua_state, -2, text);
+	lua_setfield(lua_state, -2, text.data());
 }
 
 int Script::GetArgumentCount()
