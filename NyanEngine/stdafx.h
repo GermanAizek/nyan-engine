@@ -20,6 +20,7 @@
 // sfml render
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
+#include "SFML/Config.hpp"
 #include "imgui.h"
 #include "imgui-sfml.h"
 
