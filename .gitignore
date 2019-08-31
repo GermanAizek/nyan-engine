@@ -1,4 +1,7 @@
-bin/
+bin/content/*
+bin/user/*
+*.exe
+*.dll
 ipch/
 .vs/
 *.pdb
