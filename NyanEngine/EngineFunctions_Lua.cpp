@@ -11,6 +11,8 @@
 
 Script script;
 
+lua_State* luaState = script.Create();
+
 // global functions
 
 // system
@@ -137,12 +139,17 @@ int createSprite(lua_State* luaState)
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
 	{
 		if (!texture.loadFromFile(ERROR_TEXTURE))
-			return ERROR_LOAD;
-	}
+			lua_pushboolean(luaState, false);
+		else
+		{
+			sf::Sprite sprite(texture);
+			sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
+			sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
 
-	sf::Sprite sprite(texture);
-	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
-	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
+			addAllocator(sprite, texture);
+			lua_pushboolean(luaState, true);
+		}
+	}
 
 	// physics
 	/*
@@ -158,9 +165,7 @@ int createSprite(lua_State* luaState)
 	bodySprite->SetUserData("sprite");
 	*/
 
-	addAllocator(sprite, texture);
-
-	return 0;
+	return 1;
 }
 
 /*
@@ -179,52 +184,54 @@ int setupFont(lua_State* luaState)
 }
 */
 
-sf::Text* createText(lua_State* luaState)//, sf::Text textObject)
+int createText(lua_State* luaState)
 {
 	sf::Font font;
 	if (!font.loadFromFile(script.GetArgument<char*>(2)))
 	{		
 		if (!font.loadFromFile(ERROR_FONT))
-			return nullptr;
-	}
-
-	// push pointer to text
-	sf::Text* text = (sf::Text*)lua_newuserdata(luaState, sizeof(sf::Text));
-	text->setString(script.GetArgument<char*>(1));
-	text->setCharacterSize(script.GetArgument<int>(3));
-	text->setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
-	text->setFillColor(sf::Color::White);
-	text->setOutlineColor(sf::Color::Black);
-	text->setOutlineThickness(2.0f);
-	text->setLineSpacing(1.1f);
-	//*text = textObject;
-	luaL_getmetatable(luaState, "Text");
-	lua_setmetatable(luaState, -2);
-
-	return text;
-}
-
-int setBackground(lua_State* luaState)
-{
-	sf::Texture texture;
-	texture.setSmooth(true); //antialiasing
-	texture.setRepeated(true);
-	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
-	{
-		if (!texture.loadFromFile(ERROR_TEXTURE))
+			lua_pushboolean(luaState, false);
+		else
 		{
-			std::cout << script.GetArgument<char*>(1);
-			return ERROR_LOAD;
+			// push pointer to text
+			sf::Text text;
+			text.setString(script.GetArgument<char*>(1));
+			text.setCharacterSize(script.GetArgument<int>(3));
+			text.setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
+			text.setFillColor(sf::Color::White);
+			text.setOutlineColor(sf::Color::Black);
+			text.setOutlineThickness(2.0f);
+			text.setLineSpacing(1.1f);
+
+			addAllocatorText(text, font);
+			lua_pushboolean(luaState, true);
 		}
 	}
 
-	sf::Sprite sprite;
-	sf::Vector2u vec = texture.getSize();
-	sprite.setScale((float) WIDTH / vec.x, (float) HEIGHT / vec.y);
-	addAllocator(sprite, texture);
-
-	return 0;
+	return 1;
 }
+
+//int setBackground(lua_State* luaState)
+//{
+//	sf::Texture texture;
+//	texture.setSmooth(true); //antialiasing
+//	texture.setRepeated(true);
+//	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
+//	{
+//		if (!texture.loadFromFile(ERROR_TEXTURE))
+//		{
+//			std::cout << script.GetArgument<char*>(1);
+//			return ERROR_LOAD;
+//		}
+//	}
+//
+//	sf::Sprite sprite;
+//	sf::Vector2u vec = texture.getSize();
+//	sprite.setScale((float) WIDTH / vec.x, (float) HEIGHT / vec.y);
+//	addAllocator(sprite, texture);
+//
+//	return 0;
+//}
 
 int setVerticalSync(lua_State* luaState)
 {
@@ -304,25 +311,28 @@ int changeCursor(lua_State* luaState)
 }
 
 // sound
-int emitSound(lua_State* luaState)
+int emitSound(lua_State* luaState, int index)
 {
 	try
 	{
 		sf::Sound sound = loadSound(script.GetArgument<char*>(1));
-		sound.play();
-		sound.setVolume(100.f);
 
-		//addAllocatorSound(sound);
+		return *((sf::Sound * *)luaL_checkudata(luaState, index, "Sound"));
+	}
+	catch (...)
+	{
+		lua_pushnil(luaState);
+	}
+}
 
-		int* pos = script.GetArgument<int*>(2);
-		if (pos)
-			sound.setPosition(pos[0], pos[1], pos[2]);
+int soundPlay(lua_State* luaState)
+{
+	try
+	{
+		sound->play();
 
-		//lua_pushboolean(luaState, true);
-		lua_pushinteger(luaState, pos[0]);
-		lua_pushinteger(luaState, pos[1]);
-		lua_pushinteger(luaState, pos[2]);
-		return 3;
+		lua_pushboolean(luaState, true);
+		return 1;
 	}
 	catch (...)
 	{
@@ -571,6 +581,48 @@ int isKeyboardButtonPressed(lua_State* luaState)
 		lua_pushboolean(luaState, true);
 	else
 		lua_pushboolean(luaState, false);
+
+	return 1;
+}
+
+int isGamepadButtonPressed(lua_State* luaState)
+{
+	if (sf::Joystick::isConnected(0))
+	{
+		size_t buttons = sf::Joystick::getButtonCount(0);
+
+		int keyCode = script.GetArgument<int>(1);
+
+		//sf::Joystick::Axis enumKey;
+
+		/*if (keyPressed == "JOYSTICK_POV_X")
+			enumKey = sf::Joystick::PovX;
+		else if (keyPressed == "JOYSTICK_POV_Y")
+			enumKey = sf::Joystick::PovY;
+		else if (keyPressed == "JOYSTICK_R")
+			enumKey = sf::Joystick::R;
+		else if (keyPressed == "JOYSTICK_U")
+			enumKey = sf::Joystick::U;
+		else if (keyPressed == "JOYSTICK_V")
+			enumKey = sf::Joystick::V;
+		else if (keyPressed == "JOYSTICK_X")
+			enumKey = sf::Joystick::X;
+		else if (keyPressed == "JOYSTICK_Y")
+			enumKey = sf::Joystick::Y;
+		else if (keyPressed == "JOYSTICK_Z")
+			enumKey = sf::Joystick::Z;*/
+
+		if (keyCode <= buttons)
+		{
+			if (sf::Joystick::isButtonPressed(0, keyCode))
+			{
+				std::cout << "press " << keyCode;
+				lua_pushboolean(luaState, true);
+			}
+			else
+				lua_pushboolean(luaState, false);
+		}
+	}
 
 	return 1;
 }
