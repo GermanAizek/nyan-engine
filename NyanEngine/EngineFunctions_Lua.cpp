@@ -211,28 +211,6 @@ int createText(lua_State* luaState)
 	return 1;
 }
 
-//int setBackground(lua_State* luaState)
-//{
-//	sf::Texture texture;
-//	texture.setSmooth(true); //antialiasing
-//	texture.setRepeated(true);
-//	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
-//	{
-//		if (!texture.loadFromFile(ERROR_TEXTURE))
-//		{
-//			std::cout << script.GetArgument<char*>(1);
-//			return ERROR_LOAD;
-//		}
-//	}
-//
-//	sf::Sprite sprite;
-//	sf::Vector2u vec = texture.getSize();
-//	sprite.setScale((float) WIDTH / vec.x, (float) HEIGHT / vec.y);
-//	addAllocator(sprite, texture);
-//
-//	return 0;
-//}
-
 int setVerticalSync(lua_State* luaState)
 {
 	try
@@ -317,27 +295,11 @@ int emitSound(lua_State* luaState, int index)
 	{
 		sf::Sound sound = loadSound(script.GetArgument<char*>(1));
 
-		return *((sf::Sound * *)luaL_checkudata(luaState, index, "Sound"));
+		sound.play();
 	}
 	catch (...)
 	{
 		lua_pushnil(luaState);
-	}
-}
-
-int soundPlay(lua_State* luaState)
-{
-	try
-	{
-		sound->play();
-
-		lua_pushboolean(luaState, true);
-		return 1;
-	}
-	catch (...)
-	{
-		lua_pushboolean(luaState, false);
-		return 1;
 	}
 }
 
