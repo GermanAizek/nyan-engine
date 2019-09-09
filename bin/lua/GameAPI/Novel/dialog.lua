@@ -12,27 +12,42 @@ local Dialog = {}
 --- Members dialog
 -- @number dialog box width
 -- @number dialog box height
+-- @number dialog texture width
+-- @number dialog texture height
 -- @number text size
--- @string path to texture
--- @string path to texture
-Dialog.width = ScrW() * 0.1 or nil
-Dialog.height = ScrH() * 0.74 or nil
+-- @string path to dialog body texture
+-- @string path to dialog header texture
+Dialog.width = ScrW() or nil
+Dialog.height = ScrH() * 0.25 or nil
+Dialog.sizeWidth = 1.0 or nil
+Dialog.sizeHeight = 1.0 or nil
 Dialog.sizeFont = 38 or nil
-Dialog.bodyDialog = "content/textures/ui/dialogue_body.png" or nil
-Dialog.headerDialog = "content/textures/ui/dialogue_header.png" or nil
+Dialog.bodyTexture = "content/textures/ui/dialogue_body.png" or nil
+Dialog.headerTexture = "content/textures/ui/dialogue_header.png" or nil
+Dialog.bodyText = nil
+Dialog.headerText = nil
 
---- setText Sets custom text to body of the dialog.
+--- setText Set custom text to body of the dialog.
 -- @param text to display
 -- @return boolean flag
 function Dialog.setText(text)
-	draw.DrawText(text, Dialog.sizeFont, Dialog.width, Dialog.height)
+	Dialog.bodyText = text
 end
 
---- setText Sets custom text to header of the dialog.
+--- setHeader Set custom text to header of the dialog.
 -- @param text to display
 -- @return boolean flag
-function Dialog.setHeader()
-	
+function Dialog.setHeader(text)
+	Dialog.headerText = text
+end
+
+--- show Render sprites body, header and texts.
+-- @return boolean flag
+function Dialog.show()
+	render.DrawSprite(Dialog.bodyTexture, Dialog.width, Dialog.height, Dialog.sizeWidth, Dialog.sizeHeight)
+	render.DrawSprite(Dialog.headerTexture, Dialog.width, Dialog.height, Dialog.sizeWidth, Dialog.sizeHeight)
+	draw.DrawText(text, Dialog.sizeFont, Dialog.width, Dialog.height)
+	draw.DrawText(text, Dialog.sizeFont, Dialog.width, Dialog.height)
 end
 
 return Dialog
