@@ -2,6 +2,13 @@
 
 #include "targetver.h"
 
+// sfml render
+#include "SFML/Graphics.hpp"
+#include "SFML/Audio.hpp"
+#include "SFML/Config.hpp"
+#include "imgui.h"
+#include "imgui-sfml.h"
+
 #include <stdio.h>
 #include <tchar.h>
 
@@ -14,15 +21,8 @@
 #include <windows.h>
 #include <ctime>
 #include <chrono>
-#include <algorithm>
+//#include <algorithm>
 //#include <io.h>
-
-// sfml render
-#include "SFML/Graphics.hpp"
-#include "SFML/Audio.hpp"
-#include "SFML/Config.hpp"
-#include "imgui.h"
-#include "imgui-sfml.h"
 
 // Lua 5.3
 #pragma comment(lib, "lua53.lib")
@@ -41,3 +41,4 @@ extern "C"
 //
 
 // TODO: reference additional headers your program requires here
+
