@@ -88,16 +88,22 @@ int main(size_t argc, char* argv[])
 	{
 		std::cout << "Start parameter used: " << argv[i] << '\n';
 
-		if (!strcmp(argv[i], "/bench"))
+		if (!strcmp(argv[i], "-bench"))
 		{
 			addLogFile("Benchmark mode on!");
 			Core::benchmode = true;
 		}
 
-		if (!strcmp(argv[i], "/debug"))
+		if (!strcmp(argv[i], "-debug"))
 		{
 			addLogFile("Debug mode on!");
 			Core::debugmode = true;
+		}
+
+		if (!strcmp(argv[i], "-editor"))
+		{
+			addLogFile("Editor mode on!");
+			EngineEvent::showEditor = true;
 		}
 	}
 

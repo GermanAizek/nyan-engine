@@ -14,6 +14,7 @@ namespace Core
 namespace EngineEvent
 {
 	extern bool showStats = false;
+	extern bool showEditor = true;
 }
 
 int initEngine();
