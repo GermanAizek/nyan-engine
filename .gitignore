@@ -1,5 +1,7 @@
 bin/content/*
 bin/user/*
+*.ini
+*.cfg
 *.exe
 *.dll
 ipch/
