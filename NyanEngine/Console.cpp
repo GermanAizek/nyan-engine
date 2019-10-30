@@ -4,9 +4,8 @@
 
 int CLB(ImGuiTextEditCallbackData* data)
 {
-
-	float controlWidth = *(float*)data->UserData,
-		textWidth = ImGui::CalcTextSize(data->Buf).x;
+	float controlWidth = *(float*)data->UserData;
+	float textWidth = ImGui::CalcTextSize(data->Buf).x;
 
 	if (controlWidth <= textWidth)
 	{
