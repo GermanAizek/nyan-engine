@@ -6,19 +6,26 @@
 #include "EngineFunctions_Lua.h"
 #include "Engine.h"
 #include "Console.h"
+#include "Menubar.h"
+#include "Grid.h"
+#include "Monitor.h"
+#include "Texture.h"
 #include <mutex>
 #include <sstream>
 
-
 extern Settings settings_token;
+
+std::vector<std::pair<sf::Sprite, sf::Texture>> mapAllocator;
+std::vector<sf::Text/*std::pair<sf::Text, sf::Font>*/> mapAllocatorText;
+std::vector<sf::Sound> mapAllocatorSound;
 
 std::mutex threadMutex;
 std::vector<std::exception_ptr> exceptions;
 
-int startScript(std::string nameFile)
+int startScript(std::string_view nameFile)
 {
 	std::stringstream currentPath;
-	currentPath << "content//scripts//" << nameFile;
+	currentPath << nameFile;
 
 	try
 	{
@@ -49,28 +56,25 @@ int startScript(std::string nameFile)
 		// constants
 		script.RegisterConstant<lua_CFunction>(getScreenWidth, "ScrW");
 		script.RegisterConstant<lua_CFunction>(getScreenHeight, "ScrH");
+		script.RegisterConstant<lua_CFunction>(getScaleTextureFullscreen, "GetScaleTextureFullscreen");
 		// console
 		script.RegisterConstant<lua_CFunction>(printConsole, "Msg");
 		// sounds
-		script.RegisterConstant<lua_CFunction>(emitSound, "EmitSound");
-		script.RegisterConstant<lua_CFunction>(emitMusic, "EmitMusic");
-		script.RegisterConstant<lua_CFunction>(createRecorder, "CreateRecorder");
+		//script.RegisterConstant<lua_CFunction>(soundPlay, "play"); // non work
+		script.RegisterConstant<lua_CFunction>(emitMusic, "EmitMusic"); // non work
+		script.RegisterConstant<lua_CFunction>(createRecorder, "CreateRecorder"); // non work
+		
 		// graphics
-		script.Array();
-		script.RegisterFieldGlobal<lua_CFunction>(createSprite, "DrawSprite");
+		script.RegisterConstant<lua_CFunction>(createSprite, "createSprite");
 		//script.RegisterFieldGlobal<lua_CFunction>(setVerticalSync, "SetVSync");
-		script.RegisterFieldGlobal<lua_CFunction>(changeCursor, "SetCursor");
-		script.RegisterArray("render");
+		script.RegisterConstant<lua_CFunction>(changeCursor, "changeCursor"); // non work
 
-		script.Array();
-		//script.RegisterFieldGlobal<lua_CFunction>(createText, "DrawText");
-		script.RegisterFieldGlobal<lua_CFunction>(setBackground, "DrawBackground");
-		script.RegisterArray("draw");
+		script.RegisterConstant<lua_CFunction>(createText, "createText");
+		//script.RegisterFieldGlobal<lua_CFunction>(setBackground, "DrawBackground");
 
-		script.Array();
-		script.RegisterFieldGlobal<lua_CFunction>(isMouseButtonPressed, "IsMouseDown");
-		script.RegisterFieldGlobal<lua_CFunction>(isKeyboardButtonPressed, "IsKeyDown");
-		script.RegisterArray("input");
+		script.RegisterConstant<lua_CFunction>(isMouseButtonPressed, "mouseButtonPressed");
+		script.RegisterConstant<lua_CFunction>(isKeyboardButtonPressed, "keyboardButtonPressed");
+		script.RegisterConstant<lua_CFunction>(isGamepadButtonPressed, "gamepadButtonPressed"); // beta
 
 		script.DoFile(currentPath.str().c_str());
 	}
@@ -85,10 +89,10 @@ int startScript(std::string nameFile)
 	return 0;
 }
 
-int connectToScript(std::string nameFile, Script& script)
+int connectToScript(std::string_view nameFile, Script& script)
 {
 	std::stringstream currentPath;
-	currentPath << "content//scripts//" << nameFile;
+	currentPath << nameFile;
 
 	try
 	{
@@ -116,42 +120,58 @@ void addAllocatorSound(sf::Sound& sound)
 	mapAllocatorSound.push_back(sound);
 }
 
-void addAllocatorText(sf::Text& text, sf::Font& font)
+void addAllocatorText(sf::Text text, sf::Font font)
 {
-	mapAllocatorText.push_back(std::pair<sf::Text, sf::Font>(text, font));
+	mapAllocatorText.push_back(text/*std::pair<sf::Text, sf::Font>(text, font)*/);
 }
 
-void drawer(sf::RenderWindow& window, sf::Clock dt)
+void drawer(sf::RenderWindow& window, sf::FloatRect& view, sf::Clock dt)
 {
 	window.clear();
 
 	for (auto& sprite : mapAllocator)
 	{
-		sprite.first.setTexture(sprite.second);
-
-		// physics
-		/*
-		for (b2Body* it = physSpace.GetBodyList(); it != 0; it = it->GetNext())
+		if (sprite.first.getGlobalBounds().intersects(view))
 		{
-			if (it->GetUserData() == "sprite")
-			{
-				b2Vec2 pos = it->GetPosition();
-				float angle = it->GetAngle();
-				sprite.first.setPosition(pos.x, pos.y);
-				sprite.first.setRotation(angle);
-			}
-		}
-		*/
+			sprite.first.setTexture(sprite.second);
 
-		window.draw(sprite.first);
+			// physics
+			/*
+			for (b2Body* it = physSpace.GetBodyList(); it != 0; it = it->GetNext())
+			{
+				if (it->GetUserData() == "sprite")
+				{
+					b2Vec2 pos = it->GetPosition();
+					float angle = it->GetAngle();
+					sprite.first.setPosition(pos.x, pos.y);
+					sprite.first.setRotation(angle);
+				}
+			}
+			*/
+
+			window.draw(sprite.first);
+		}
 	}
+
+	
 
 	for (auto& text : mapAllocatorText)
 	{
-		text.first.setFont(text.second);
-		window.draw(text.first);
+		sf::Text queueText = text;//.first;
+		queueText.setFillColor(sf::Color::White);
+		queueText.setOutlineColor(sf::Color::Black);
+		queueText.setOutlineThickness(2.0f);
+		queueText.setLineSpacing(1.1f);
+		// test font
+		sf::Font font;
+		if (!font.loadFromFile("content/fonts/arial.ttf"))
+		{
+			// error
+		}
+		//
+		queueText.setFont(font); // text.second
+		window.draw(queueText);
 	}
-
 
 	for (auto& sound : mapAllocatorSound)
 	{
@@ -160,6 +180,13 @@ void drawer(sf::RenderWindow& window, sf::Clock dt)
 
 	ImGui::SFML::Update(window, dt.restart());
 
+	// GUI elements
+	if (EngineEvent::showEditor)
+	{
+		Nyan::Grid grid(10, 10, &window);
+		menubarCreate();
+	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde))
 		consoleOpened ? consoleOpened = false : consoleOpened = true;
 
@@ -167,6 +194,16 @@ void drawer(sf::RenderWindow& window, sf::Clock dt)
 		consoleCreate("Console");
 
 	ImGui::SFML::Render(window);
+
+	// GUI system elements
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
+		statsOpened ? statsOpened = false : statsOpened = true;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::F3))
+		EngineEvent::showEditor ? EngineEvent::showEditor = false : EngineEvent::showEditor = true;
+
+	if (statsOpened)
+		statsHandler(window, getFPS(dt.restart()));
 
 	window.display();
 }
@@ -180,88 +217,81 @@ size_t renderDeviceSFML()
 	}
 	*/
 
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "build", sf::Style::Fullscreen);
+	sf::RenderWindow window(sf::VideoMode(1920, 1080), "nyan engine", sf::Style::Fullscreen);
 	window.setSize(sf::Vector2u(WIDTH, HEIGHT));
-	window.setTitle("nyanengine");
 	window.setActive(true);
-	window.setFramerateLimit(60);
+	window.setFramerateLimit(120);
+	window.setVerticalSyncEnabled(true);
 	//window.setIcon(64, 64, icon);
 	ImGui::SFML::Init(window);
-    window.setVerticalSyncEnabled(true);
-	
-	// create thread init drawer
-	
-	exceptions.clear();
 
-	std::thread threadInit(startScript, "init.lua");
-	threadInit.join();
+	sf::Vector2f viewCenter(window.getView().getCenter());
+	sf::Vector2f viewSize(window.getView().getSize());
 
-	for (auto& error : exceptions)
+	sf::FloatRect currentViewRect(viewCenter - viewSize / 2.f, viewSize);
+	
+	if (!EngineEvent::showEditor)
 	{
-		try
-		{
-			if (error != nullptr)
-				std::rethrow_exception(error);
-		}
-		catch (const std::exception& error)
-		{
-			addLogFile(error.what());
-		}
-	}
-	
-	/*
-	sf::Texture texture2;
-	if (!texture2.loadFromFile("content/textures/null.jpg", sf::IntRect(100, 100, 500, 500)))
-	{
-		cout << "1";
-	}
-	sf::Sprite spr(texture2);
+		// create thread init drawer
+		exceptions.clear();
 
-	//loadSetTextureSprite(m_sprite,"content/textures/1.jpg");
-	/*
-	// Console
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde)){
-		sf::Texture texture;
-		if (!texture.loadFromFile("ontent/textures/ui/console.jpg", sf::IntRect(100, 30, 300, 50))) {
-			cout << "[ERROR] Console not create!\n";
+		std::thread threadInit(startScript, "content//scripts//init.lua");
+		threadInit.join();
+
+		for (auto& error : exceptions)
+		{
+			try
+			{
+				if (error != nullptr)
+					std::rethrow_exception(error);
+			}
+			catch (const std::exception& error)
+			{
+				addLogFile(error.what());
+			}
 		}
 	}
-	//
-	*/
-	
-	//sf::Sprite sprite(pullerAllocator());
+	else
+	{
+		Nyan::Texture back("content/textures/system/editor_background.jpg");
+		sf::Texture texture(back.get());
+		texture.setSmooth(true);
+		texture.setRepeated(true);
+
+		sf::Sprite backgroundEditor;
+		backgroundEditor.setTexture(texture);
+		backgroundEditor.setTextureRect({ 0, 0, (int)WIDTH, (int)HEIGHT });
+		addAllocator(backgroundEditor, back.get());
+	}
 	
 	sf::Clock dt;
 	while (window.isOpen())
 	{
-		/*
-		sf::Cursor cursor;
-		if (cursor.loadFromSystem(sf::Cursor::Wait))
-			window.setMouseCursor(cursor);
-		*/
-
 		sf::Event GameEvent;
 		if (window.pollEvent(GameEvent))
 		{
-			// create thread think drawer
-			exceptions.clear();
-
-			std::thread threadThink(connectToScript, "think.lua", script);
-			threadThink.join();
-
-			for (auto& error : exceptions)
+			if (!EngineEvent::showEditor)
 			{
-				try
+				// create thread think drawer
+				exceptions.clear();
+
+				std::thread threadThink(connectToScript, "content//scripts//think.lua", script);
+				threadThink.join();
+
+				for (auto& error : exceptions)
 				{
-					if (error != nullptr)
-						std::rethrow_exception(error);
+					try
+					{
+						if (error != nullptr)
+							std::rethrow_exception(error);
+					}
+					catch (const std::exception& error)
+					{
+						addLogFile(error.what());
+					}
 				}
-				catch (const std::exception& error)
-				{
-					addLogFile(error.what());
-				}
+				//
 			}
-			//
 
 			ImGui::SFML::ProcessEvent(GameEvent);
 
@@ -275,49 +305,10 @@ size_t renderDeviceSFML()
 			}
 		}
 
-		drawer(window, dt);
+		drawer(window, currentViewRect, dt);
 	}
 
 	ImGui::SFML::Shutdown();
 	
 	return true;
-}
-
-void renderScene()
-{
-	//sf::CircleShape shape(100.f);
-	//shape.setFillColor(sf::Color::Green);
-
-	// Load a sprite to display
-	sf::Texture texture;
-	if (!texture.loadFromFile("content/textures/1.jpg"))
-		return;
-
-	sf::Sprite sprite(texture);
-	// Create a graphical text to display
-	//sf::Font font;
-	//if (!font.loadFromFile("arial.ttf"))
-	//	return;
-	//sf::Text text("Nyan", font, 50);
-}
-
-void loadSetTextureSprite(sf::Sprite sprite, std::string texture)
-{
-	sf::Texture obj_texture;
-	if(!obj_texture.loadFromFile(texture))
-	{
-		//cout << "[ERROR} Cannot load texture! " << texture << "\n";
-		addLogFile("[ERROR} Cannot load texture! " + texture);
-		return;
-	}
-	
-    sprite.setTexture(obj_texture);
-
-	/*
-	if (!m_texture.loadFromFile("Textures/1.jpg")){
-	cout << "[ERROR} Cannot load texture! " <<  << "\n"; 
-	return false;
-	}
-    	m_sprite.setTexture(m_texture);
-	*/
 }
