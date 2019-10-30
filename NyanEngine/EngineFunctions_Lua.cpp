@@ -116,13 +116,11 @@ int getScreenHeight(lua_State* luaState)
 
 int getScaleTextureFullscreen(lua_State* luaState)
 {
-	sf::Texture texture;
+	Nyan::Texture texture;
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
-	{
 		lua_pushboolean(luaState, false);
-	}
 
-	sf::Vector2u sizeTexture = texture.getSize();
+	sf::Vector2u sizeTexture = texture.get().getSize();
 	float scaleX = ((float)WIDTH / (float)sizeTexture.x);
 	float scaleY = ((float)HEIGHT / (float)sizeTexture.y);
 
@@ -144,16 +142,11 @@ int printConsole(lua_State* luaState)
 // graphics
 int createSprite(lua_State* luaState)
 {
-	sf::Texture texture;
-	texture.setSmooth(true); //antialiasing
-
+	Nyan::Texture texture;
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
-	{
-		if (!texture.loadFromFile(ERROR_TEXTURE))
-			lua_pushboolean(luaState, false);
-	}
+		lua_pushboolean(luaState, false);
 
-	sf::Sprite sprite(texture);
+	sf::Sprite sprite(texture.get());
 	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
 	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
 
@@ -182,16 +175,13 @@ int createSprite(lua_State* luaState)
 
 int createAnimateSprite(lua_State* luaState)
 {
-	sf::Texture texture;
-	texture.setSmooth(true); //antialiasing
+	//texture.setSmooth(true); //antialiasing
 
+	Nyan::Texture texture;
 	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
-	{
-		if (!texture.loadFromFile(ERROR_TEXTURE))
-			lua_pushboolean(luaState, false);
-	}
+		lua_pushboolean(luaState, false);
 
-	sf::Sprite sprite(texture);
+	sf::Sprite sprite(texture.get());
 	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
 	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
 	size_t size = script.GetArgument<int>(6);

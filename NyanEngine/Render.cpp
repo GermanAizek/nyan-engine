@@ -15,7 +15,7 @@
 
 extern Settings settings_token;
 
-std::vector<std::pair<sf::Sprite, sf::Texture>> mapAllocator;
+std::vector<std::pair<sf::Sprite, Nyan::Texture>> mapAllocator;
 std::vector<sf::Text/*std::pair<sf::Text, sf::Font>*/> mapAllocatorText;
 std::vector<sf::Sound> mapAllocatorSound;
 
@@ -110,9 +110,9 @@ int connectToScript(std::string_view nameFile, Script& script)
 	return 0;
 }
 
-void addAllocator(sf::Sprite& sprite, sf::Texture& texture)
+void addAllocator(sf::Sprite& sprite, Nyan::Texture& texture)
 {
-	mapAllocator.push_back(std::pair<sf::Sprite, sf::Texture>(sprite, texture));
+	mapAllocator.push_back(std::pair<sf::Sprite, Nyan::Texture>(sprite, texture));
 }
 
 void addAllocatorSound(sf::Sound& sound)
@@ -133,7 +133,7 @@ void drawer(sf::RenderWindow& window, sf::FloatRect& view, sf::Clock dt)
 	{
 		if (sprite.first.getGlobalBounds().intersects(view))
 		{
-			sprite.first.setTexture(sprite.second);
+			sprite.first.setTexture(sprite.second.get());
 
 			// physics
 			/*
@@ -261,7 +261,7 @@ size_t renderDeviceSFML()
 		sf::Sprite backgroundEditor;
 		backgroundEditor.setTexture(texture);
 		backgroundEditor.setTextureRect({ 0, 0, (int)WIDTH, (int)HEIGHT });
-		addAllocator(backgroundEditor, back.get());
+		addAllocator(backgroundEditor, back);
 	}
 	
 	sf::Clock dt;

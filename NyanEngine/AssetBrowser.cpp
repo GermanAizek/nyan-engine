@@ -16,9 +16,8 @@ void assetBrowserCreate(std::string_view name)
 	Nyan::Texture texture("content/textures/actor.png");
 	if (ImGui::ImageButton(texture.get(), { 128.0f, 128.0f }))
 	{
-		sf::Texture texture;
-		texture.loadFromFile("content/textures/mouse.png");
-		sf::Sprite sprite(texture);
+		Nyan::Texture texture("content/textures/mouse.png");
+		sf::Sprite sprite(texture.get());
 		sprite.setPosition(200, 200);
 		sprite.setTextureRect(sf::IntRect(32, 0, 32, 32));
 		addAllocator(sprite, texture);

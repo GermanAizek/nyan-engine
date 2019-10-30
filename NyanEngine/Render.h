@@ -2,16 +2,17 @@
 
 #include "stdafx.h"
 #include "Script.h"
+#include "Texture.h"
 
 int startScript(std::string_view nameFile);
 int connectToScript(std::string_view nameFile, Script& script);
 
 size_t renderDeviceSFML();
-void addAllocator(sf::Sprite& sprite, sf::Texture& texture);
+void addAllocator(sf::Sprite& sprite, Nyan::Texture& texture);
 void addAllocatorSound(sf::Sound& sound);
 void addAllocatorText(sf::Text text, sf::Font font);
 
-extern std::vector<std::pair<sf::Sprite, sf::Texture>> mapAllocator;
+extern std::vector<std::pair<sf::Sprite, Nyan::Texture>> mapAllocator;
 extern std::vector<sf::Text/*std::pair<sf::Text, sf::Font>*/> mapAllocatorText;
 extern std::vector<sf::Sound> mapAllocatorSound;
 
