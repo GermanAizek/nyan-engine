@@ -2,16 +2,16 @@
 #include "EngineFunctions_Lua.h"
 #include "Engine.h"
 #include "Render.h"
+#include "Texture.h"
 #include "SoundManager.h"
 #include "Script.h"
 #include <any>
-#include <Box2D/Box2D.h>
 
 // TODO: Добавить больше методов функций для работы с движком
 
 Script script;
 
-lua_State* luaState = script.Create();
+//lua_State* globalLuaState = script.Create();
 
 // global functions
 
@@ -114,12 +114,23 @@ int getScreenHeight(lua_State* luaState)
 	return 1;
 }
 
-// window
-//int getScreenHeight(lua_State* luaState, void** p)
-//{
+int getScaleTextureFullscreen(lua_State* luaState)
+{
+	sf::Texture texture;
+	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
+	{
+		lua_pushboolean(luaState, false);
+	}
 
-//	return 1;
-//}
+	sf::Vector2u sizeTexture = texture.getSize();
+	float scaleX = ((float)WIDTH / (float)sizeTexture.x);
+	float scaleY = ((float)HEIGHT / (float)sizeTexture.y);
+
+	lua_pushnumber(luaState, scaleX);
+	lua_pushnumber(luaState, scaleY);
+
+	return 2;
+}
 
 // console
 int printConsole(lua_State* luaState)
@@ -140,16 +151,54 @@ int createSprite(lua_State* luaState)
 	{
 		if (!texture.loadFromFile(ERROR_TEXTURE))
 			lua_pushboolean(luaState, false);
-		else
-		{
-			sf::Sprite sprite(texture);
-			sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
-			sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
-
-			addAllocator(sprite, texture);
-			lua_pushboolean(luaState, true);
-		}
 	}
+
+	sf::Sprite sprite(texture);
+	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
+	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
+
+	// physics
+	/*
+	if (script.GetArgument<bool>(6))
+	{
+		b2PolygonShape shape;
+		shape.SetAsBox(sprite.getScale().x, sprite.getScale().y);
+
+		b2BodyDef bodyDef;
+		bodyDef.type = b2_dynamicBody;
+		bodyDef.position.Set(sprite.getPosition().x, sprite.getPosition().y);
+
+		b2Body* bodySprite = physSpace.CreateBody(&bodyDef);
+		bodySprite->CreateFixture(&shape, 1);
+		bodySprite->SetUserData("sprite");
+	}
+	*/
+
+	addAllocator(sprite, texture);
+	lua_pushboolean(luaState, true);
+
+	return 1;
+}
+
+int createAnimateSprite(lua_State* luaState)
+{
+	sf::Texture texture;
+	texture.setSmooth(true); //antialiasing
+
+	if (!texture.loadFromFile(script.GetArgument<char*>(1)))
+	{
+		if (!texture.loadFromFile(ERROR_TEXTURE))
+			lua_pushboolean(luaState, false);
+	}
+
+	sf::Sprite sprite(texture);
+	sprite.setPosition(sf::Vector2f(script.GetArgument<double>(2), script.GetArgument<double>(3)));
+	sprite.setScale(sf::Vector2f(script.GetArgument<double>(4), script.GetArgument<double>(5)));
+	size_t size = script.GetArgument<int>(6);
+	//sprite.setTextureRect(sf::IntRect(size * int(currentFrame), size, size, size));
+
+	addAllocator(sprite, texture);
+	lua_pushboolean(luaState, true);
 
 	// physics
 	/*
@@ -191,22 +240,15 @@ int createText(lua_State* luaState)
 	{		
 		if (!font.loadFromFile(ERROR_FONT))
 			lua_pushboolean(luaState, false);
-		else
-		{
-			// push pointer to text
-			sf::Text text;
-			text.setString(script.GetArgument<char*>(1));
-			text.setCharacterSize(script.GetArgument<int>(3));
-			text.setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
-			text.setFillColor(sf::Color::White);
-			text.setOutlineColor(sf::Color::Black);
-			text.setOutlineThickness(2.0f);
-			text.setLineSpacing(1.1f);
-
-			addAllocatorText(text, font);
-			lua_pushboolean(luaState, true);
-		}
 	}
+
+	sf::Text text;
+	text.setString(script.GetArgument<char*>(1));
+	text.setCharacterSize(script.GetArgument<int>(3));
+	text.setPosition(script.GetArgument<double>(4), script.GetArgument<double>(5));
+
+	addAllocatorText(text, font);
+	lua_pushboolean(luaState, true);
 
 	return 1;
 }
@@ -289,18 +331,29 @@ int changeCursor(lua_State* luaState)
 }
 
 // sound
-int emitSound(lua_State* luaState, int index)
+int emitSound(lua_State* luaState)
 {
 	try
 	{
-		sf::Sound sound = loadSound(script.GetArgument<char*>(1));
+		sf::SoundBuffer buffer;
+		if (!buffer.loadFromFile(script.GetArgument<char*>(1)))
+		{
+			lua_pushboolean(luaState, false);
+			throw "Music not loaded";
+		}
 
-		sound.play();
+		sf::Sound sound;
+		sound.setBuffer(buffer);
+		addAllocatorSound(sound);
+
+		lua_pushboolean(luaState, true);
 	}
 	catch (...)
 	{
 		lua_pushnil(luaState);
 	}
+
+	return 1;
 }
 
 int emitMusic(lua_State* luaState)
