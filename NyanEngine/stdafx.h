@@ -2,12 +2,15 @@
 
 #include "targetver.h"
 
-// sfml render
+// SFML Library
 #include "SFML/Graphics.hpp"
 #include "SFML/Audio.hpp"
 #include "SFML/Config.hpp"
 #include "imgui.h"
 #include "imgui-sfml.h"
+
+// Box2D Physics
+#include <Box2D/Box2D.h>
 
 #include <stdio.h>
 #include <tchar.h>
